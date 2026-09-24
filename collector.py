@@ -6,10 +6,9 @@ import requests
 from bs4 import BeautifulSoup
 import sys
 
-# In log trực tiếp trên console GitHub Actions
 sys.stdout.reconfigure(line_buffering=True)
 
-# ================= CẤU HÌNH SUPABASE =================
+# ================= CẤU HÌNH KẾT NỐI SUPABASE =================
 RAW_SUPABASE = os.getenv("SUPABASE_URL", "https://lleeibzegmnycuingzgx.supabase.co")
 match = re.search(r'https://[a-zA-Z0-9-]+\.supabase\.co', RAW_SUPABASE)
 SUPABASE_URL = match.group(0) if match else "https://lleeibzegmnycuingzgx.supabase.co"
@@ -18,6 +17,9 @@ SUPABASE_KEY = os.getenv(
     "SUPABASE_KEY",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxsZWVpYnplZ21ueWN1aW5nemd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxMjc5OTUsImV4cCI6MjEwNTcwMzk5NX0.KrO8Y8qoKh0NIPYDL6wki7zGb-Lxi1xwWgQrX9xSXxE"
 ).strip("[]'\" \t\n\r")
+
+# Số lượng bài viết tối đa cần nạp mỗi lần chạy (mặc định 25 bài mới nhất)
+TARGET_ARTICLES = int(os.getenv("TARGET_ARTICLES", 25))
 
 SUPABASE_ENDPOINT = f"{SUPABASE_URL}/rest/v1/tech_articles"
 SUPABASE_HEADERS = {
@@ -33,21 +35,46 @@ REQUEST_HEADERS = {
     "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7"
 }
 
-# Các chuyên mục nòng cốt của Quản Trị Mạng
+# DANH SÁCH CÁC CHUYÊN MỤC TRỌNG ĐIỂM ĐƯỢC CHỌN LỌC TỪ FILE EXCEL
 QTM_SECTIONS = [
-    {"url": "https://quantrimang.com/", "default_cat": "Tiêu Điểm Công Nghệ"},
-    {"url": "https://quantrimang.com/cong-nghe", "default_cat": "Làng Công Nghệ"},
-    {"url": "https://quantrimang.com/lang-cong-nghe/tri-tue-nhan-tao", "default_cat": "Trí Tuệ Nhân Tạo (AI)"},
-    {"url": "https://quantrimang.com/he-thong", "default_cat": "Hệ Thống & Quản Trị"},
-    {"url": "https://quantrimang.com/lap-trinh", "default_cat": "Lập Trình & Mã Nguồn"}
+    # 1. AI & Hệ sinh thái mô hình lớn
+    {"url": "https://quantrimang.com/ai", "cat": "AI", "sub": "Hệ Sinh Thái AI"},
+    {"url": "https://quantrimang.com/chatgpt", "cat": "AI", "sub": "ChatGPT"},
+    {"url": "https://quantrimang.com/claude", "cat": "AI", "sub": "Claude"},
+    {"url": "https://quantrimang.com/gemini", "cat": "AI", "sub": "Gemini"},
+    {"url": "https://quantrimang.com/copilot", "cat": "AI", "sub": "Copilot"},
+    {"url": "https://quantrimang.com/grok", "cat": "AI", "sub": "Grok"},
+    {"url": "https://quantrimang.com/perplexity", "cat": "AI", "sub": "Perplexity"},
+    {"url": "https://quantrimang.com/cursor", "cat": "AI", "sub": "Cursor"},
+
+    # 2. Thư viện Prompt & Hướng dẫn làm chủ AI
+    {"url": "https://quantrimang.com/ai-prompt", "cat": "Prompt", "sub": "Thư Viện Prompt"},
+    {"url": "https://quantrimang.com/prompt-it", "cat": "Prompt", "sub": "Prompt Lập Trình"},
+    {"url": "https://quantrimang.com/lam-chu-ai", "cat": "Hướng dẫn AI", "sub": "Hướng Dẫn AI"},
+    {"url": "https://quantrimang.com/ai-cho-nguoi-moi", "cat": "Hướng dẫn AI", "sub": "AI Cho Người Mới"},
+    {"url": "https://quantrimang.com/ai-cho-van-phong", "cat": "Hướng dẫn AI", "sub": "AI Cho Văn Phòng"},
+    {"url": "https://quantrimang.com/ai-cho-lap-trinh", "cat": "Hướng dẫn AI", "sub": "AI Cho Lập Trình"},
+    {"url": "https://quantrimang.com/workflow", "cat": "Workflow", "sub": "AI Automation"},
+
+    # 3. Công nghệ, Hệ thống & Bảo mật
+    {"url": "https://quantrimang.com/cong-nghe", "cat": "Công nghệ", "sub": "Làng Công Nghệ"},
+    {"url": "https://quantrimang.com/cong-nghe/he-thong", "cat": "Công nghệ", "sub": "Hệ Thống & Quản Trị"},
+    {"url": "https://quantrimang.com/cong-nghe/bao-mat", "cat": "Công nghệ", "sub": "An Ninh & Bảo Mật"},
+    {"url": "https://quantrimang.com/cong-nghe/phan-cung", "cat": "Công nghệ", "sub": "Phần Cứng & Thiết Bị"},
+    {"url": "https://quantrimang.com/cong-nghe/linux-os", "cat": "Công nghệ", "sub": "Linux & Server"},
+
+    # 4. Học CNTT & Mã nguồn
+    {"url": "https://quantrimang.com/hoc", "cat": "Học CNTT", "sub": "Học Lập Trình"},
+    {"url": "https://quantrimang.com/hoc/hoc-python", "cat": "Học CNTT", "sub": "Python"},
+    {"url": "https://quantrimang.com/hoc/hoc-excel", "cat": "Học CNTT", "sub": "Hàm Excel"},
+    {"url": "https://quantrimang.com/hoc/vibe-coding", "cat": "Học CNTT", "sub": "Vibe Coding với AI"}
 ]
 
 def clean_text(text):
     if not text:
         return ""
     text = html.unescape(text)
-    text = re.sub(r'\s+', ' ', text).strip()
-    return text
+    return re.sub(r'\s+', ' ', text).strip()
 
 def is_article_exists(url):
     try:
@@ -56,11 +83,11 @@ def is_article_exists(url):
         if res.status_code == 200 and len(res.json()) > 0:
             return True
     except Exception as e:
-        print(f"      [!] Lỗi kiểm tra trùng lặp: {e}")
+        print(f"      [!] Lỗi kiểm tra tồn tại: {e}")
     return False
 
 def scrape_full_article(url):
-    """Cào chi tiết toàn bộ bài viết từ Quản Trị Mạng"""
+    """Trích xuất trọn vẹn văn bản, từng bước hướng dẫn, code snippets và toàn bộ hình ảnh gốc"""
     try:
         res = requests.get(url, headers=REQUEST_HEADERS, timeout=12)
         if res.status_code != 200:
@@ -69,7 +96,7 @@ def scrape_full_article(url):
         res.encoding = 'utf-8'
         soup = BeautifulSoup(res.text, 'html.parser')
 
-        # Dọn sạch quảng cáo, widget mua sắm, bình luận
+        # Dọn sạch các phần tử rác
         for junk in soup(['script', 'style', 'iframe', 'header', 'footer', 'nav', 'form', 'aside', 'noscript']):
             junk.decompose()
         for junk in soup.find_all(class_=re.compile(r'relate|box-tag|comment|banner|advert|social|author|breadcrumb|recommend|sticky|box-buy|price-box|affiliate')):
@@ -79,7 +106,6 @@ def scrape_full_article(url):
         if not container:
             container = soup.find('article') or soup.body
 
-        # Lấy đoạn Sapo mở đầu
         sapo_text = ""
         sapo_tag = soup.find(class_=re.compile(r'detail-sapo|sapo|lead'))
         if sapo_tag:
@@ -92,9 +118,8 @@ def scrape_full_article(url):
         if sapo_text and len(sapo_text) > 15:
             content_html_parts.append(f'<p class="font-semibold text-slate-900 text-lg leading-relaxed mb-6 border-b border-slate-100 pb-4">{sapo_text}</p>')
 
-        # Bóc tách tuần tự: văn bản, danh sách từng bước, code, hình ảnh
         for element in container.find_all(['p', 'figure', 'div', 'h2', 'h3', 'h4', 'ul', 'ol', 'pre', 'img']):
-            # Ảnh minh họa (Xử lý mọi cơ chế Lazy-load của Quản Trị Mạng)
+            # Bóc tách hình ảnh (kèm xử lý lazy-load)
             if element.name in ['figure', 'img'] or (element.name == 'div' and ('photo' in str(element.get('class', [])).lower() or element.get('type') == 'Photo')):
                 img_tag = element if element.name == 'img' else element.find('img')
                 if img_tag:
@@ -134,7 +159,7 @@ def scrape_full_article(url):
                 if 5 < len(text) < 150:
                     content_html_parts.append(f'<h3 class="text-xl font-bold text-slate-900 mt-8 mb-3 font-mono">{text}</h3>')
 
-            # Danh sách từng bước thực hiện
+            # Danh sách từng bước thực hiện (ol/ul)
             elif element.name in ['ul', 'ol']:
                 items = element.find_all('li')
                 if items:
@@ -144,7 +169,7 @@ def scrape_full_article(url):
                         list_class = "list-decimal pl-6 my-4 space-y-1 text-slate-700" if tag_name == "ol" else "list-disc pl-6 my-4 space-y-1 text-slate-700"
                         content_html_parts.append(f'<{tag_name} class="{list_class}">{list_items}</{tag_name}>')
 
-            # Hộp code / Lệnh command line
+            # Hộp code snippet / terminal command
             elif element.name == 'pre':
                 code_text = clean_text(element.get_text())
                 if len(code_text) > 5:
@@ -163,50 +188,59 @@ def scrape_full_article(url):
         print(f"      [!] Lỗi trích xuất: {e}")
         return None, None
 
-def analyze_qtm_article(title, default_cat):
+def analyze_article(title, default_cat, sub_cat):
     title_clean = clean_text(title)
     content_lower = title_clean.lower()
 
+    # Nhận diện chuyên mục chi tiết dựa trên phân loại menu
     category = default_cat
-    if any(k in content_lower for k in ["ai", "chatgpt", "openai", "copilot", "gemini", "prompt", "deep research"]):
-        category = "Trí Tuệ Nhân Tạo (AI)"
-    elif any(k in content_lower for k in ["bảo mật", "hacker", "virus", "lỗ hổng", "mã độc", "vpn", "mật khẩu"]):
-        category = "An Ninh & Bảo Mật"
-    elif any(k in content_lower for k in ["hướng dẫn", "thủ thuật", "cách", "sửa lỗi", "windows", "ios", "android"]):
-        category = "Thủ Thuật & Hệ Thống"
-    elif any(k in content_lower for k in ["python", "code", "lập trình", "sql", "html", "css", "javascript"]):
-        category = "Lập Trình & Phát Triển"
-    elif any(k in content_lower for k in ["quản trị mạng", "router", "wifi", "ip", "cisco", "switch", "dns"]):
-        category = "Quản Trị Mạng & Mạng Máy Tính"
+    if any(k in content_lower for k in ["prompt", "câu lệnh", "mẫu prompt"]):
+        category = "Prompt"
+    elif any(k in content_lower for k in ["chatgpt", "gpt-4", "gpt-5", "openai"]):
+        category = "ChatGPT"
+    elif any(k in content_lower for k in ["claude", "anthropic", "sonnet"]):
+        category = "Claude"
+    elif any(k in content_lower for k in ["gemini", "google deepmind"]):
+        category = "Gemini"
+    elif any(k in content_lower for k in ["copilot", "microsoft 365 copilot"]):
+        category = "Copilot"
+    elif any(k in content_lower for k in ["workflow", "n8n", "zapier", "automation"]):
+        category = "Workflow"
+    elif any(k in content_lower for k in ["bảo mật", "hacker", "virus", "lỗ hổng", "mã độc", "vpn"]):
+        category = "Bảo Mật"
+    elif any(k in content_lower for k in ["python", "hàm excel", "sql", "code", "lập trình"]):
+        category = "Học CNTT"
 
     summary = title_clean
-    insight = "Thực hiện cẩn thận theo từng bước hướng dẫn, sao lưu cấu hình hệ thống trước khi thao tác."
+    insight = f"Chuyên mục [{sub_cat}]: Thực hiện theo từng bước hướng dẫn, lưu ý sao lưu hoặc kiểm chứng kết quả trước khi đưa vào môi trường làm việc."
 
-    if category == "Trí Tuệ Nhân Tạo (AI)":
-        insight = "Ứng dụng các prompt mẫu và công cụ AI mới vào công việc thực tế để tự động hóa tác vụ."
-    elif category == "An Ninh & Bảo Mật":
-        insight = "Bật xác thực đa yếu tố (2FA), không nhấp liên kết lạ và cập nhật bản vá hệ điều hành định kỳ."
-    elif category == "Quản Trị Mạng & Mạng Máy Tính":
-        insight = "Kiểm tra kỹ sơ đồ phân dải IP, subnet mask và tạo bản backup file config thiết bị mạng."
+    if category in ["AI", "ChatGPT", "Claude", "Gemini", "Copilot"]:
+        insight = "Thực hành thử nghiệm kết hợp prompt chi tiết để tối ưu độ chính xác và giảm thiểu hiện tượng ảo giác (hallucination) của AI."
+    elif category == "Prompt":
+        insight = "Áp dụng công thức đóng vai (Role) + Mục tiêu (Goal) + Định dạng mong muốn (Format) để câu lệnh đạt hiệu quả cao nhất."
+    elif category == "Bảo Mật":
+        insight = "Kích hoạt xác thực 2 lớp (2FA/MFA) và kiểm tra kỹ địa chỉ nguồn trước khi thao tác các đường link hoặc file đính kèm."
 
     return title_clean, summary, insight, category
 
-# ================= QUY TRÌNH THU THẬP TỪ QUANTRIMANG =================
-print("=== BẮT ĐẦU CÀO BÀI VIẾT CHUYÊN BIỆT TỪ QUANTRIMANG.COM ===")
+# ================= QUY TRÌNH THU THẬP =================
+print(f"=== BẮT ĐẦU CÀO BÀI VIẾT THEO DANH MỤC QUANTRI MẠNG (MỤC TIÊU: {TARGET_ARTICLES} BÀI) ===")
 
 unique_articles = []
 seen_urls = set()
 
 for sec in QTM_SECTIONS:
-    print(f"\n[*] Đang quét danh mục: {sec['default_cat']} ({sec['url']})")
+    if len(unique_articles) >= TARGET_ARTICLES * 2:
+        break
+
+    print(f"\n[*] Đang quét danh mục: {sec['sub']} ({sec['url']})")
     try:
-        res = requests.get(sec["url"], headers=REQUEST_HEADERS, timeout=12)
+        res = requests.get(sec["url"], headers=REQUEST_HEADERS, timeout=10)
         if res.status_code == 200:
             soup = BeautifulSoup(res.text, 'html.parser')
             for a in soup.find_all('a', href=True):
                 href = a['href']
                 title = clean_text(a.get_text())
-                # Bắt các link bài viết có cấu trúc id bài ở cuối đuôi (-123456)
                 if re.search(r'-\d+$', href) and len(title) > 25:
                     full_link = href if href.startswith('http') else f"https://quantrimang.com{href}"
                     if full_link not in seen_urls:
@@ -214,25 +248,29 @@ for sec in QTM_SECTIONS:
                         unique_articles.append({
                             "title": title,
                             "url": full_link,
-                            "cat": sec["default_cat"]
+                            "cat": sec["cat"],
+                            "sub": sec["sub"]
                         })
     except Exception as e:
         print(f"    [x] Lỗi truy cập: {e}")
+    time.sleep(0.3)
 
-print(f"\n=> Đã phát hiện tổng cộng {len(unique_articles)} bài viết từ Quản Trị Mạng.")
-print("Bắt đầu trích xuất và đồng bộ vào Supabase (giới hạn 15 bài mới nhất mỗi lần chạy):")
+print(f"\n=> Tìm thấy {len(unique_articles)} bài viết mới từ hệ thống menu.")
+print(f"Bắt đầu nạp bài vào Supabase:\n")
 
 saved_count = 0
-for item in unique_articles[:15]:
+for item in unique_articles:
+    if saved_count >= TARGET_ARTICLES:
+        break
+
     title = item["title"]
     url = item["url"]
 
     if is_article_exists(url):
-        print(f"  [-] Đã tồn tại: {title[:40]}...")
         continue
 
-    print(f"  -> Đang bóc tách bài: {title[:45]}...")
-    clean_title, summary, tips, category = analyze_qtm_article(title, item["cat"])
+    print(f"[{saved_count + 1}/{TARGET_ARTICLES}] Trích xuất: {title[:45]}...")
+    clean_title, summary, tips, category = analyze_article(title, item["cat"], item["sub"])
     full_content, lead_image = scrape_full_article(url)
 
     if not full_content or len(full_content) < 80:
@@ -251,13 +289,13 @@ for item in unique_articles[:15]:
     try:
         db_res = requests.post(SUPABASE_ENDPOINT, headers=SUPABASE_HEADERS, json=record, timeout=10)
         if db_res.status_code in [200, 201]:
-            print(f"     ✔ Đã lưu thành công: [{category}] ({'Có ảnh' if lead_image else 'Ảnh mặc định'})")
             saved_count += 1
+            print(f"       ✔ Đã lưu: [{category}]")
         else:
-            print(f"     ✖ Lỗi Supabase: {db_res.status_code}")
+            print(f"       ✖ Lỗi Supabase: {db_res.status_code}")
     except Exception as e:
-        print(f"     ✖ Lỗi kết nối: {e}")
+        print(f"       ✖ Lỗi mạng: {e}")
 
-    time.sleep(1.2)
+    time.sleep(1.0)
 
-print(f"\n=== HOÀN TẤT! ĐÃ ĐỒNG BỘ THÀNH CÔNG {saved_count} BÀI TỪ QUANTRIMANG.COM ===")
+print(f"\n=== HOÀN TẤT! ĐÃ LƯU {saved_count} BÀI VIẾT VÀO SUPABASE ===")
