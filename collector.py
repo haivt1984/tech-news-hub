@@ -9,11 +9,13 @@ import sys
 sys.stdout.reconfigure(line_buffering=True)
 
 # ================= CẤU HÌNH THÔNG TIN =================
-RAW_SUPABASE = os.getenv("SUPABASE_URL", "https://lleeibzegmnycuingzgx.supabase.co").strip("[]'\" \t\n\r")
-if not RAW_SUPABASE.startswith("http"):
-    SUPABASE_URL = f"https://{RAW_SUPABASE}"
+# Lọc sạch triệt để mọi định dạng Markdown, ngoặc vuông, ngoặc tròn, xuống dòng \n
+RAW_SUPABASE = os.getenv("SUPABASE_URL", "https://lleeibzegmnycuingzgx.supabase.co")
+match = re.search(r'https://[a-zA-Z0-9-]+\.supabase\.co', RAW_SUPABASE)
+if match:
+    SUPABASE_URL = match.group(0)
 else:
-    SUPABASE_URL = RAW_SUPABASE
+    SUPABASE_URL = "https://lleeibzegmnycuingzgx.supabase.co"
 
 SUPABASE_KEY = os.getenv(
     "SUPABASE_KEY",
@@ -21,11 +23,11 @@ SUPABASE_KEY = os.getenv(
 ).strip("[]'\" \t\n\r")
 # ======================================================
 
-# Nguồn tin Công nghệ hàng đầu Việt Nam
+# Nguồn tin Công nghệ chuẩn hóa
 FEEDS = [
     {"source": "VnExpress Số Hóa", "url": "https://vnexpress.net/rss/so-hoa.rss", "default_cat": "Thiết bị số"},
     {"source": "Tuổi Trẻ Công Nghệ", "url": "https://tuoitre.vn/rss/nhip-song-so.rss", "default_cat": "Trí tuệ nhân tạo"},
-    {"source": "Thanh Niên Công Nghệ", "url": "https://thanhnien.vn/rss/cong-nghe-game.rss", "default_cat": "Xu hướng công nghệ"},
+    {"source": "Thanh Niên Công Nghệ", "url": "https://thanhnien.vn/rss/cong-nghe.rss", "default_cat": "Xu hướng công nghệ"},
     {"source": "Dân Trí Sức Mạnh Số", "url": "https://dantri.com.vn/rss/suc-manh-so.rss", "default_cat": "Đời sống số"},
     {"source": "VietnamNet ICT", "url": "https://vietnamnet.vn/rss/thong-tin-truyen-thong.rss", "default_cat": "Chuyển đổi số"}
 ]
