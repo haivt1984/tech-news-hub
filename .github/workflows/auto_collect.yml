@@ -25,3 +25,5 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: python collector.py
+      - name: Cài thư viện
+        run: pip install requests feedparser beautifulsoup4
