@@ -18,12 +18,10 @@ jobs:
           python-version: '3.11'
 
       - name: Cài thư viện
-        run: pip install requests feedparser
+        run: pip install requests feedparser beautifulsoup4
 
       - name: Chạy thu thập tin công nghệ
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: python collector.py
-      - name: Cài thư viện
-        run: pip install requests feedparser beautifulsoup4
