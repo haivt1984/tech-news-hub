@@ -18,8 +18,8 @@ SUPABASE_KEY = os.getenv(
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxsZWVpYnplZ21ueWN1aW5nemd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxMjc5OTUsImV4cCI6MjEwNTcwMzk5NX0.KrO8Y8qoKh0NIPYDL6wki7zGb-Lxi1xwWgQrX9xSXxE"
 ).strip("[]'\" \t\n\r")
 
-# Số lượng bài viết tối đa cần nạp mỗi lần chạy (mặc định 25 bài mới nhất)
-TARGET_ARTICLES = int(os.getenv("TARGET_ARTICLES", 25))
+# Số lượng bài viết tối đa cần nạp mỗi lần chạy (mặc định 500 bài mới nhất)
+TARGET_ARTICLES = int(os.getenv("TARGET_ARTICLES", 500))
 
 SUPABASE_ENDPOINT = f"{SUPABASE_URL}/rest/v1/tech_articles"
 SUPABASE_HEADERS = {
