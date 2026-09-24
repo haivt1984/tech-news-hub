@@ -30,7 +30,7 @@ FEEDS = [
     {"source": "VietnamNet ICT", "url": "https://vietnamnet.vn/rss/thong-tin-truyen-thong.rss", "default_cat": "Chuyển đổi số"}
 ]
 
-ARTICLES_PER_FEED = 3
+ARTICLES_PER_FEED = 50
 
 SUPABASE_ENDPOINT = f"{SUPABASE_URL}/rest/v1/tech_articles"
 SUPABASE_HEADERS = {
