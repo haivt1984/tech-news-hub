@@ -2,13 +2,27 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>TechVN Pulse &bull; Tạp Chí & Cẩm Nang Công Nghệ Số</title>
+
+  <!-- CẤU HÌNH CHUẨN PWA & TƯƠNG THÍCH ĐỘC QUYỀN CHO IOS (IPHONE / IPAD) -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="TechVN">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1006/1006771.png">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="format-detection" content="telephone=no">
+
+  <!-- Tailwind CSS & Supabase JS SDK -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+
   <script>
     tailwind.config = {
       theme: {
@@ -32,6 +46,14 @@
     }
   </script>
   <style>
+    /* Hỗ trợ khoảng an toàn (Safe Area) cho tai thỏ & Dynamic Island trên iOS */
+    body {
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+      -webkit-tap-highlight-color: transparent;
+    }
     .tech-grid-bg {
       background-image: radial-gradient(rgba(2, 132, 199, 0.08) 1px, transparent 1px);
       background-size: 24px 24px;
@@ -48,9 +70,9 @@
         HỆ THỐNG ONLINE
       </span>
       <span class="hidden sm:inline text-slate-300">|</span>
-      <span class="hidden sm:inline">Lưu trữ trọn vẹn bài viết & hình ảnh gốc</span>
+      <span class="hidden sm:inline">PWA Hỗ trợ iOS Standalone & Offline</span>
     </div>
-    <div id="stats-counter" class="font-medium text-brand-700">Đang đồng bộ cơ sở dữ liệu...</div>
+    <div id="stats-counter" class="font-medium text-brand-700">Đang nạp dữ liệu...</div>
   </div>
 
   <!-- Header -->
@@ -201,7 +223,7 @@
         <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
         <span class="font-bold text-slate-700">TECHVN PULSE PORTAL SYSTEM</span>
       </div>
-      <div>Trang web độc lập &bull; Supabase Storage &bull; GitHub Pages Host</div>
+      <div>Trang web độc lập &bull; Supabase Storage &bull; GitHub Pages PWA</div>
     </div>
   </footer>
 
@@ -214,18 +236,18 @@
     let currentCategory = 'ALL';
     let currentSort = 'newest';
 
-    // Kho ảnh công nghệ Unsplash đa dạng chống trùng lặp
+    // Kho ảnh công nghệ Unsplash chất lượng cao chống trùng lặp
     const techPhotoPool = [
-      'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', // Chip
-      'https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=800&q=80', // AI
-      'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80', // Bảo mật
-      'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=800&q=80', // Hardware
-      'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80', // Software
-      'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80', // Network
-      'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=800&q=80', // Laptop
-      'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80', // Earth Tech
-      'https://images.unsplash.com/photo-1504639725590-34d0984388bd?auto=format&fit=crop&w=800&q=80', // Coding
-      'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80'  // Digital Team
+      'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1504639725590-34d0984388bd?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80'
     ];
 
     function getFallbackForArticle(article) {
@@ -522,6 +544,15 @@
       }
       renderContent();
     });
+
+    // ĐĂNG KÝ SERVICE WORKER ĐỂ KÍCH HOẠT PWA TRÊN IOS / ANDROID
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('TechVN PWA Service Worker Registered:', reg.scope))
+          .catch(err => console.log('PWA Service Worker Error:', err));
+      });
+    }
 
     initPortal();
   </script>
