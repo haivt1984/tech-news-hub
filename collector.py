@@ -19,7 +19,7 @@ SUPABASE_KEY = os.getenv(
 ).strip("[]'\" \t\n\r")
 
 # Số lượng bài viết tối đa cần nạp mỗi lần chạy (mặc định 500 bài mới nhất)
-TARGET_ARTICLES = int(os.getenv("TARGET_ARTICLES", 500))
+TARGET_ARTICLES = int(os.getenv("TARGET_ARTICLES", 25))
 
 SUPABASE_ENDPOINT = f"{SUPABASE_URL}/rest/v1/tech_articles"
 SUPABASE_HEADERS = {
