@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>TechVN Pulse &bull; Tạp Chí Công Nghệ & Thủ Thuật Hệ Thống</title>
+  <title>TechCraft Hub &bull; Cẩm Nang Công Nghệ, Thủ Thuật Hệ Thống & AI</title>
 
   <!-- PWA & iOS Safari Config -->
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="TechVN">
+  <meta name="apple-mobile-web-app-title" content="TechCraft">
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1006/1006771.png">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#0066cc">
 
   <!-- Tailwind CSS & Supabase JS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- Typography: Plus Jakarta Sans -->
+  <!-- Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -31,17 +31,12 @@
             mono: ['JetBrains Mono', 'monospace']
           },
           colors: {
-            primary: {
-              50: '#eef2ff',
-              100: '#e0e7ff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-            },
-            accent: {
-              50: '#f0fdfa',
-              500: '#14b8a6',
-              600: '#0d9488',
+            brand: {
+              blue: '#0066cc',
+              darkblue: '#004c99',
+              orange: '#ff6600',
+              hoverorange: '#e65c00',
+              light: '#f4f6fa'
             }
           }
         }
@@ -56,55 +51,52 @@
       padding-right: env(safe-area-inset-right);
       -webkit-tap-highlight-color: transparent;
     }
-    .mesh-gradient {
-      background: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
-                  radial-gradient(at 100% 0%, rgba(20, 184, 166, 0.08) 0px, transparent 50%),
-                  radial-gradient(at 50% 100%, rgba(244, 63, 94, 0.04) 0px, transparent 50%);
-    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-[#fafbff] text-slate-800 min-h-screen flex flex-col justify-between font-sans antialiased selection:bg-indigo-500 selection:text-white">
+<body class="bg-[#f4f6fa] text-slate-800 min-h-screen flex flex-col justify-between font-sans antialiased selection:bg-brand-blue selection:text-white">
 
-  <!-- Top Announcement Bar -->
-  <div class="border-b border-indigo-100 bg-white/70 backdrop-blur-md text-[11px] font-mono text-slate-500 py-2 px-4 sm:px-8 flex justify-between items-center sticky top-0 z-40">
-    <div class="flex items-center gap-2.5">
-      <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 font-semibold border border-emerald-200">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-        HỆ THỐNG TRỰC TUYẾN
+  <!-- Top Blue Bar -->
+  <div class="bg-brand-darkblue text-white/90 text-xs py-1.5 px-4 sm:px-8 flex justify-between items-center font-mono">
+    <div class="flex items-center gap-3">
+      <span class="inline-flex items-center gap-1.5 font-bold text-amber-300">
+        <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+        TECHCRAFT PULSE
       </span>
-      <span class="hidden sm:inline text-slate-300">|</span>
-      <span class="hidden sm:inline text-slate-600">Tổng hợp tin tức & thủ thuật công nghệ từ QuanTriMang, VnExpress, Tuổi Trẻ</span>
+      <span class="hidden sm:inline text-white/40">|</span>
+      <span class="hidden sm:inline text-white/80">Cổng kiến thức công nghệ thực chiến, quản trị hệ thống & giải pháp AI</span>
     </div>
-    <div id="stats-counter" class="font-semibold text-primary-600">Đang đồng bộ dữ liệu...</div>
+    <div id="stats-counter" class="text-white font-semibold">Đang nạp dữ liệu...</div>
   </div>
 
   <!-- Header -->
-  <header class="border-b border-slate-100 bg-white/90 backdrop-blur-md sticky top-[37px] z-30 shadow-xs">
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
       
       <!-- Brand Logo -->
       <div class="flex items-center gap-3 cursor-pointer" onclick="showListView()">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-teal-400 flex items-center justify-center text-white shadow-md shadow-indigo-500/25 font-mono text-base font-bold">
-          ⚡
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-blue to-indigo-600 flex items-center justify-center text-white font-mono font-bold text-lg shadow-md shadow-blue-500/20">
+          TC/
         </div>
         <div>
-          <span class="font-extrabold text-2xl tracking-tight bg-gradient-to-r from-indigo-600 to-teal-500 bg-clip-text text-transparent">
-            TechPulse<span class="text-slate-900 font-mono text-sm ml-1 font-semibold">.VN</span>
+          <span class="font-extrabold text-2xl tracking-tight text-slate-900">
+            TechCraft<span class="text-brand-orange font-mono text-base ml-0.5">.Hub</span>
           </span>
-          <p class="text-[10px] text-slate-400 font-medium tracking-wide">Cẩm nang thủ thuật, quản trị mạng & AI</p>
+          <p class="text-[11px] text-slate-400 font-medium">Hệ sinh thái kiến thức công nghệ & thủ thuật hệ thống</p>
         </div>
       </div>
 
-      <!-- Controls: Live Search & Sort -->
-      <div class="w-full md:w-auto flex flex-col sm:flex-row items-center gap-2">
-        <div class="w-full sm:w-64 relative">
+      <!-- Controls: Search & Sort -->
+      <div class="w-full md:w-auto flex items-center gap-2">
+        <div class="w-full sm:w-72 relative">
           <input 
             type="text" 
             id="search-input"
-            placeholder="Tìm bài viết, thủ thuật..." 
-            class="w-full bg-slate-50/80 border border-slate-200 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-400 focus:bg-white transition"
+            placeholder="Tìm thủ thuật, AI, hệ thống mạng..." 
+            class="w-full bg-slate-100 border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-blue focus:bg-white transition"
           />
-          <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
           </svg>
         </div>
@@ -112,121 +104,178 @@
         <select 
           id="sort-select" 
           onchange="handleSortChange()"
-          class="w-full sm:w-auto bg-slate-50/80 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-600 font-mono focus:outline-none focus:border-indigo-400 cursor-pointer">
-          <option value="newest">🕒 Mới nhất</option>
-          <option value="oldest">⌛ Cũ nhất</option>
-          <option value="title_az">🔤 Tên A &rarr; Z</option>
+          class="bg-slate-100 border border-slate-200 rounded-lg px-2.5 py-2 text-xs text-slate-700 font-mono focus:outline-none focus:border-brand-blue cursor-pointer">
+          <option value="newest">Mới nhất</option>
+          <option value="oldest">Cũ nhất</option>
+          <option value="title_az">Tên A-Z</option>
         </select>
       </div>
     </div>
 
-    <!-- Category Pill Filter Tabs -->
-    <div id="category-tab-container" class="border-t border-slate-50 bg-white/60">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center gap-1.5 overflow-x-auto text-xs font-medium no-scrollbar">
-        <button onclick="filterCategory('ALL')" class="cat-btn active px-3.5 py-1 rounded-full bg-indigo-600 text-white font-semibold shadow-xs transition">
-          Tất cả
+    <!-- Category Navigation -->
+    <div class="bg-brand-blue text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-1 overflow-x-auto text-xs font-semibold no-scrollbar py-1">
+        <button onclick="filterCategory('ALL')" class="cat-btn active px-3.5 py-2 rounded text-white bg-brand-darkblue transition">
+          TRANG CHỦ
         </button>
-        <button onclick="filterCategory('Thủ Thuật')" class="cat-btn px-3 py-1 rounded-full bg-slate-100/80 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 transition">
-          🛠️ Thủ Thuật & Quản Trị
+        <button onclick="filterCategory('Trí Tuệ Nhân Tạo')" class="cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition">
+          AI & CÔNG NGHỆ
         </button>
-        <button onclick="filterCategory('Trí tuệ nhân tạo')" class="cat-btn px-3 py-1 rounded-full bg-slate-100/80 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 transition">
-          ✨ Trí Tuệ Nhân Tạo (AI)
+        <button onclick="filterCategory('Thủ Thuật')" class="cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition">
+          THỦ THUẬT HỆ THỐNG
         </button>
-        <button onclick="filterCategory('Bảo mật')" class="cat-btn px-3 py-1 rounded-full bg-slate-100/80 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 transition">
-          🛡️ An Ninh Mạng
+        <button onclick="filterCategory('Quản Trị Mạng')" class="cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition">
+          QUẢN TRỊ MẠNG & HẠ TẦNG
         </button>
-        <button onclick="filterCategory('Phần cứng')" class="cat-btn px-3 py-1 rounded-full bg-slate-100/80 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 transition">
-          💻 Thiết Bị & Phần Cứng
+        <button onclick="filterCategory('An Ninh')" class="cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition">
+          BẢO MẬT & AN NINH MẠNG
+        </button>
+        <button onclick="filterCategory('Lập Trình')" class="cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition">
+          LẬP TRÌNH & MÃ NGUỒN
         </button>
       </div>
     </div>
   </header>
 
-  <!-- ================= VIEW 1: TRANG DANH SÁCH BÀI VIẾT (TỐI GIẢN) ================= -->
-  <main id="list-view" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full mesh-gradient">
+  <!-- ================= VIEW 1: TRANG CHỦ ================= -->
+  <main id="list-view" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
     
-    <!-- Hero Featured Article -->
-    <section id="hero-section" class="mb-10 hidden"></section>
+    <!-- 1. KHU VỰC TIÊU ĐIỂM (1 BÀI ĐINH LỚN + 3 BÀI NHỎ) -->
+    <section id="hero-section" class="mb-8 hidden"></section>
 
-    <!-- Header Section -->
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-sm font-bold tracking-wider uppercase text-slate-400 font-mono flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
-        Bài viết mới cập nhật
-      </h2>
-      <div id="results-count" class="text-xs font-mono text-slate-400"></div>
-    </div>
+    <!-- 2. BỐ CỤC 2 CỘT -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Cột Trái: Dòng bài viết chính -->
+      <div class="lg:col-span-8">
+        <div class="flex items-center justify-between border-b-2 border-brand-blue pb-2 mb-6">
+          <h2 class="text-base font-bold uppercase text-brand-blue flex items-center gap-2">
+            <span class="w-2.5 h-2.5 bg-brand-orange rounded-xs"></span>
+            BÀI VIẾT MỚI CẬP NHẬT
+          </h2>
+          <span id="results-count" class="text-xs font-mono text-slate-400"></span>
+        </div>
 
-    <!-- Cards Grid: Gọn gàng, loại bỏ văn bản tóm tắt thừa -->
-    <div id="articles-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="col-span-full py-28 flex flex-col items-center justify-center text-slate-400 gap-3">
-        <div class="w-8 h-8 border-3 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-        <span class="text-xs font-mono">Đang đồng bộ dữ liệu bài viết...</span>
+        <div id="articles-list" class="space-y-5">
+          <div class="py-20 flex flex-col items-center justify-center text-slate-400 gap-3">
+            <div class="w-8 h-8 border-3 border-brand-blue border-t-transparent rounded-full animate-spin"></div>
+            <span class="text-xs font-mono">Đang đồng bộ dữ liệu...</span>
+          </div>
+        </div>
       </div>
+
+      <!-- Cột Phải: Sidebar Tiện ích & Mẹo nhanh -->
+      <aside class="lg:col-span-4 space-y-6">
+        
+        <!-- Widget 1: Mẹo hay & Đáng chú ý -->
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+          <div class="flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
+            <span class="text-brand-orange font-bold">⚡</span>
+            <h3 class="font-bold text-sm text-slate-800 uppercase tracking-tight">Mẹo & Tiện Ích Đáng Chú Ý</h3>
+          </div>
+          <ul class="text-xs space-y-3 text-slate-600 leading-relaxed">
+            <li class="flex items-start gap-2">
+              <span class="text-brand-blue font-bold">&bull;</span>
+              <span>ChatGPT & AI Prompting: Phương pháp tối ưu quy trình làm việc và tự động hóa tác vụ</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-brand-blue font-bold">&bull;</span>
+              <span>Khắc phục lỗi xác thực và cấp phát địa chỉ IP qua DHCP trên mạng doanh nghiệp</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-brand-blue font-bold">&bull;</span>
+              <span>Các câu lệnh PowerShell thiết yếu cho IT Support và Quản trị viên hệ thống</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-brand-blue font-bold">&bull;</span>
+              <span>Thiết lập tường lửa và phân quyền bảo mật nhiều lớp chống xâm nhập trái phép</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Widget 2: Chủ đề phổ biến -->
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+          <div class="flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
+            <span class="text-brand-blue font-bold">📂</span>
+            <h3 class="font-bold text-sm text-slate-800 uppercase tracking-tight">Chủ Đề Quan Tâm</h3>
+          </div>
+          <div class="flex flex-wrap gap-1.5 text-xs">
+            <span class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white cursor-pointer transition text-slate-600">Windows 11</span>
+            <span class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white cursor-pointer transition text-slate-600">Trí Tuệ Nhân Tạo</span>
+            <span class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white cursor-pointer transition text-slate-600">An Toàn Thông Tin</span>
+            <span class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white cursor-pointer transition text-slate-600">Linux Server</span>
+            <span class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white cursor-pointer transition text-slate-600">Automation Script</span>
+            <span class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white cursor-pointer transition text-slate-600">Hạ Tầng Mạng</span>
+          </div>
+        </div>
+
+      </aside>
+
     </div>
   </main>
 
-  <!-- ================= VIEW 2: TRANG ĐỌC BÀI CHI TIẾT (FULL ARTICLE) ================= -->
-  <main id="detail-view" class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full hidden">
+  <!-- ================= VIEW 2: TRANG ĐỌC BÀI CHI TIẾT ================= -->
+  <main id="detail-view" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full hidden">
     <!-- Back Button -->
-    <button onclick="showListView()" class="group inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-300 font-medium text-xs transition shadow-2xs mb-6">
-      <span class="group-hover:-translate-x-1 transition duration-200">&larr;</span> Quay lại danh sách
+    <button onclick="showListView()" class="group inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-brand-blue hover:text-brand-blue font-semibold text-xs transition shadow-2xs mb-6">
+      <span class="group-hover:-translate-x-1 transition duration-200">&larr;</span> Quay lại danh sách bài viết
     </button>
 
-    <article class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 sm:p-10 overflow-hidden">
-      <!-- Article Header -->
-      <div class="flex items-center gap-2.5 mb-4">
-        <span id="detail-category" class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-50 text-indigo-600 border border-indigo-100"></span>
+    <article class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-xs overflow-hidden">
+      <!-- Meta -->
+      <div class="flex items-center gap-2 mb-3">
+        <span id="detail-category" class="px-2.5 py-0.5 rounded text-[11px] font-bold bg-blue-50 text-brand-blue uppercase"></span>
         <span class="text-slate-300">&bull;</span>
         <span id="detail-date" class="text-xs font-mono text-slate-400"></span>
       </div>
 
-      <h1 id="detail-title" class="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-snug tracking-tight mb-6"></h1>
+      <!-- Title -->
+      <h1 id="detail-title" class="text-2xl sm:text-3xl font-bold text-slate-900 leading-snug tracking-tight mb-6"></h1>
 
       <!-- Main Thumbnail -->
-      <div id="detail-img-container" class="w-full rounded-2xl overflow-hidden mb-8 bg-slate-50 border border-slate-100 max-h-[440px]">
+      <div id="detail-img-container" class="w-full rounded-xl overflow-hidden mb-6 bg-slate-50 border border-slate-100 max-h-[460px]">
         <img id="detail-img" src="" alt="Thumbnail" class="w-full h-full object-cover">
       </div>
 
-      <!-- Expert Recommendation Box -->
-      <div id="detail-tips-box" class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-indigo-50/80 to-teal-50/60 border border-indigo-100/80 mb-8 text-xs font-mono">
-        <div class="flex items-center gap-1.5 text-indigo-700 font-bold uppercase tracking-wider mb-1.5 text-[11px]">
+      <!-- Tips Box -->
+      <div id="detail-tips-box" class="p-4 sm:p-5 rounded-xl bg-amber-50 border border-amber-200 mb-6 text-xs font-mono">
+        <div class="flex items-center gap-1.5 text-amber-800 font-bold uppercase tracking-wider mb-1.5 text-[11px]">
           <span>💡</span>
-          <span>GÓC NHÌN & LƯU Ý KỸ THUẬT</span>
+          <span>LƯU Ý KỸ THUẬT & HƯỚNG DẪN THỰC HIỆN</span>
         </div>
         <p id="detail-tips" class="text-slate-700 leading-relaxed font-sans text-sm font-normal"></p>
       </div>
 
-      <!-- Main Article Body -->
-      <div id="detail-body" class="prose max-w-none text-slate-700 leading-relaxed text-base"></div>
+      <!-- Main Body Content -->
+      <div id="detail-body" class="prose max-w-none text-slate-800 leading-relaxed text-base"></div>
 
-      <!-- Action Footer -->
+      <!-- Footer Action -->
       <div class="mt-10 pt-6 border-t border-slate-100 flex items-center justify-between text-xs font-mono">
-        <span class="text-slate-400">Nguồn dữ liệu: Báo chí & QuanTriMang</span>
-        <button onclick="showListView()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-medium transition shadow-xs">
-          Đọc bài viết khác
+        <span class="text-slate-400">Xuất bản trên TechCraft Platform</span>
+        <button onclick="showListView()" class="px-4 py-2 rounded-lg bg-brand-blue hover:bg-brand-darkblue text-white font-bold transition">
+          Xem bài viết khác &rarr;
         </button>
       </div>
     </article>
 
     <!-- Related Articles -->
-    <div class="mt-10">
-      <h3 class="font-mono text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-teal-500"></span>
-        Bài viết liên quan
+    <div class="mt-8">
+      <h3 class="font-bold text-sm text-slate-800 uppercase tracking-tight mb-4 flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-brand-orange"></span>
+        Bài viết cùng chuyên mục
       </h3>
       <div id="related-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
     </div>
   </main>
 
-  <!-- Clean Footer -->
-  <footer class="border-t border-slate-100 bg-white py-6 text-xs text-slate-400">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-6 text-xs text-slate-500 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-2">
-        <span class="w-2 h-2 bg-indigo-500 rounded-full"></span>
-        <span class="font-semibold text-slate-600">TechPulse.VN &bull; Smart Tech Aggregator</span>
+        <span class="w-2.5 h-2.5 rounded-full bg-brand-blue"></span>
+        <span class="font-bold text-slate-700">TechCraft Platform</span>
       </div>
-      <div class="font-mono text-[11px]">Supabase &bull; GitHub Pages &bull; PWA Enabled</div>
+      <div>Nền tảng tri thức Công Nghệ, Hệ Thống & Quản Trị Mạng &bull; PWA Standalone</div>
     </div>
   </footer>
 
@@ -239,11 +288,8 @@
     let currentCategory = 'ALL';
     let currentSort = 'newest';
 
-    // Bộ sưu tập ảnh công nghệ màu sắc tươi sáng
-    const vibrantPhotoPool = [
+    const techPhotoPool = [
       'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=800&q=80',
@@ -253,11 +299,11 @@
 
     function getFallbackForArticle(article) {
       const idNum = parseInt(article.id) || 0;
-      if (idNum > 0) return vibrantPhotoPool[idNum % vibrantPhotoPool.length];
+      if (idNum > 0) return techPhotoPool[idNum % techPhotoPool.length];
       let hash = 0;
-      const str = article.title || 'tech';
+      const str = article.title || 'techcraft';
       for (let i = 0; i < str.length; i++) hash = (hash << 5) - hash + str.charCodeAt(i);
-      return vibrantPhotoPool[Math.abs(hash) % vibrantPhotoPool.length];
+      return techPhotoPool[Math.abs(hash) % techPhotoPool.length];
     }
 
     function getArticleImage(article) {
@@ -270,11 +316,10 @@
         const { data, error } = await client.from('tech_articles').select('*');
         if (error) throw error;
         if (!data || data.length === 0) {
-          document.getElementById('articles-grid').innerHTML = `
-            <div class="col-span-full text-center py-20 bg-white rounded-3xl border border-slate-100 p-8 shadow-xs">
-              <div class="text-3xl mb-2">🌿</div>
-              <p class="text-slate-700 font-bold">Chưa có bài viết nào trong cơ sở dữ liệu</p>
-              <p class="text-slate-400 text-xs mt-1 font-mono">Kích hoạt Actions workflow để bắt đầu cào bài tự động.</p>
+          document.getElementById('articles-list').innerHTML = `
+            <div class="text-center py-16 bg-white rounded-xl border border-slate-200 p-6">
+              <p class="text-slate-700 font-bold">Chưa có bài viết nào trong hệ thống</p>
+              <p class="text-slate-400 text-xs mt-1 font-mono">Chạy Actions workflow để hệ thống bắt đầu nạp bài.</p>
             </div>
           `;
           return;
@@ -285,8 +330,8 @@
         handleHashRouting();
         renderContent();
       } catch (err) {
-        document.getElementById('articles-grid').innerHTML = `
-          <div class="col-span-full p-4 bg-rose-50 border border-rose-200 rounded-2xl text-rose-600 text-center text-xs font-mono">
+        document.getElementById('articles-list').innerHTML = `
+          <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-center text-xs font-mono">
             Lỗi nạp bài: ${err.message}
           </div>
         `;
@@ -317,9 +362,7 @@
       
       let filtered = allArticles.filter(item => {
         const matchCategory = (currentCategory === 'ALL') || (item.category && item.category.toLowerCase().includes(currentCategory.toLowerCase()));
-        const matchSearch = (!query) || 
-          (item.title && item.title.toLowerCase().includes(query)) ||
-          (item.summary && item.summary.toLowerCase().includes(query));
+        const matchSearch = (!query) || (item.title && item.title.toLowerCase().includes(query));
         return matchCategory && matchSearch;
       });
 
@@ -330,113 +373,114 @@
         return 0;
       });
 
-      document.getElementById('results-count').innerText = `${filtered.length} kết quả`;
+      document.getElementById('results-count').innerText = `${filtered.length} bài viết`;
 
       const heroSection = document.getElementById('hero-section');
-      const grid = document.getElementById('articles-grid');
+      const listContainer = document.getElementById('articles-list');
 
       if (filtered.length === 0) {
         heroSection.classList.add('hidden');
-        grid.innerHTML = `<div class="col-span-full text-center py-16 text-slate-400 font-mono text-xs">Không tìm thấy bài viết phù hợp.</div>`;
+        listContainer.innerHTML = `<div class="text-center py-16 text-slate-400 font-mono text-xs">Không tìm thấy bài viết phù hợp.</div>`;
         return;
       }
 
-      let gridArticles = filtered;
-      if (currentCategory === 'ALL' && !query && currentSort === 'newest' && filtered.length > 0) {
-        const featured = filtered[0];
-        gridArticles = filtered.slice(1);
-        renderHero(featured);
+      // Render Tiêu điểm nếu là trang chủ mặc định
+      if (currentCategory === 'ALL' && !query && currentSort === 'newest' && filtered.length >= 4) {
+        renderHeroBlock(filtered.slice(0, 4));
         heroSection.classList.remove('hidden');
+        renderArticleStream(filtered.slice(4));
       } else {
         heroSection.classList.add('hidden');
+        renderArticleStream(filtered);
       }
-
-      grid.innerHTML = '';
-      gridArticles.forEach(item => {
-        grid.appendChild(createCard(item));
-      });
     }
 
-    // Hero Article (Tươi sáng, tinh gọn)
-    function renderHero(item) {
+    function renderHeroBlock(topArticles) {
       const hero = document.getElementById('hero-section');
-      const dateStr = item.created_at ? new Date(item.created_at).toLocaleDateString('vi-VN') : '';
-      const imgUrl = getArticleImage(item);
+      const mainLead = topArticles[0];
+      const sideLeads = topArticles.slice(1, 4);
+
+      const mainImg = getArticleImage(mainLead);
+      const mainDate = mainLead.created_at ? new Date(mainLead.created_at).toLocaleDateString('vi-VN') : '';
 
       hero.innerHTML = `
-        <div onclick="navigateToArticle(${item.id})" class="cursor-pointer relative overflow-hidden rounded-3xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition duration-300 grid grid-cols-1 lg:grid-cols-12 group">
-          <div class="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center gap-2 mb-3">
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100 uppercase tracking-wide">
-                  ${item.category || 'Công nghệ'}
-                </span>
-                <span class="text-xs text-slate-400">&bull; ${dateStr}</span>
-              </div>
-
-              <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-snug mb-3 group-hover:text-indigo-600 transition">
-                ${item.title}
-              </h1>
-
-              <p class="text-slate-500 text-sm leading-relaxed line-clamp-2 mb-6">
-                ${item.summary}
-              </p>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs">
+          
+          <!-- Bài đinh bên trái -->
+          <div onclick="navigateToArticle(${mainLead.id})" class="lg:col-span-7 cursor-pointer group flex flex-col justify-between">
+            <div class="w-full h-64 sm:h-72 rounded-xl overflow-hidden mb-3.5 bg-slate-100">
+              <img src="${mainImg}" alt="${mainLead.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.onerror=null; this.src='${getFallbackForArticle(mainLead)}';">
             </div>
-
             <div>
-              <span class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 group-hover:text-indigo-700">
-                Khám phá chi tiết &rarr;
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-brand-blue uppercase">
+                ${mainLead.category || 'Tiêu Điểm'}
               </span>
+              <h2 class="text-lg sm:text-xl font-bold text-slate-900 group-hover:text-brand-blue transition leading-snug mt-2">
+                ${mainLead.title}
+              </h2>
+              <span class="text-xs font-mono text-slate-400 mt-1 block">${mainDate}</span>
             </div>
           </div>
 
-          <div class="lg:col-span-5 relative min-h-[220px] lg:min-h-full overflow-hidden bg-slate-50">
-            <img src="${imgUrl}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.onerror=null; this.src='${getFallbackForArticle(item)}';">
+          <!-- 3 Bài nhỏ bên phải -->
+          <div class="lg:col-span-5 flex flex-col justify-between divide-y divide-slate-100">
+            ${sideLeads.map(item => `
+              <div onclick="navigateToArticle(${item.id})" class="py-3 first:pt-0 last:pb-0 cursor-pointer group flex gap-3.5 items-center">
+                <div class="w-24 h-20 rounded-lg overflow-hidden shrink-0 bg-slate-100">
+                  <img src="${getArticleImage(item)}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='${getFallbackForArticle(item)}';">
+                </div>
+                <div>
+                  <span class="text-[10px] font-bold text-brand-orange uppercase block mb-0.5">${item.category || 'Mẹo Hay'}</span>
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-brand-blue transition line-clamp-2 leading-snug">
+                    ${item.title}
+                  </h4>
+                  <span class="text-[10px] font-mono text-slate-400 mt-1 block">
+                    ${item.created_at ? new Date(item.created_at).toLocaleDateString('vi-VN') : ''}
+                  </span>
+                </div>
+              </div>
+            `).join('')}
           </div>
+
         </div>
       `;
     }
 
-    // Minimalist Card (Thẻ bài viết gọn gàng, không nhồi nhét)
-    function createCard(item) {
-      const card = document.createElement('article');
-      card.className = "cursor-pointer flex flex-col justify-between bg-white border border-slate-100 rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition duration-200 group";
-      card.onclick = () => navigateToArticle(item.id);
+    function renderArticleStream(articles) {
+      const container = document.getElementById('articles-list');
+      container.innerHTML = '';
 
-      const dateStr = item.created_at ? new Date(item.created_at).toLocaleDateString('vi-VN') : '';
-      const imgUrl = getArticleImage(item);
+      articles.forEach(item => {
+        const row = document.createElement('article');
+        row.className = "bg-white p-4 rounded-xl border border-slate-200 hover:border-brand-blue cursor-pointer transition shadow-2xs group flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between";
+        row.onclick = () => navigateToArticle(item.id);
 
-      card.innerHTML = `
-        <div>
-          <!-- Thumbnail -->
-          <div class="w-full h-44 overflow-hidden relative bg-slate-50">
-            <img src="${imgUrl}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='${getFallbackForArticle(item)}';" loading="lazy">
-            <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/95 backdrop-blur-md text-indigo-600 shadow-2xs border border-white">
-              ${item.category || 'Công nghệ'}
+        const dateStr = item.created_at ? new Date(item.created_at).toLocaleDateString('vi-VN') : '';
+        const imgUrl = getArticleImage(item);
+
+        row.innerHTML = `
+          <div class="flex gap-4 items-center">
+            <div class="w-28 h-20 sm:w-32 sm:h-22 rounded-lg overflow-hidden shrink-0 bg-slate-100">
+              <img src="${imgUrl}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='${getFallbackForArticle(item)}';" loading="lazy">
+            </div>
+            <div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-brand-blue uppercase">
+                ${item.category || 'Thủ Thuật'}
+              </span>
+              <h3 class="text-sm sm:text-base font-bold text-slate-900 group-hover:text-brand-blue transition leading-snug mt-1.5 line-clamp-2">
+                ${item.title}
+              </h3>
+              <span class="text-xs font-mono text-slate-400 mt-1 block">${dateStr}</span>
+            </div>
+          </div>
+          <div class="shrink-0 hidden sm:block">
+            <span class="text-xs font-bold text-brand-blue group-hover:translate-x-1 transition duration-200 inline-flex items-center gap-1">
+              Đọc tiếp &rarr;
             </span>
           </div>
-
-          <!-- Body -->
-          <div class="p-4 sm:p-5">
-            <div class="text-[11px] font-mono text-slate-400 mb-1.5">${dateStr}</div>
-            
-            <h3 class="font-bold text-slate-900 text-sm sm:text-base leading-snug group-hover:text-indigo-600 transition line-clamp-2">
-              ${item.title}
-            </h3>
-          </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="px-4 sm:px-5 pb-4 pt-0">
-          <div class="pt-3 border-t border-slate-50 flex items-center justify-between text-[11px]">
-            <span class="text-slate-400 font-mono">Đọc ngay</span>
-            <span class="font-bold text-indigo-600 group-hover:translate-x-1 transition duration-200 inline-flex items-center gap-0.5">
-              Chi tiết &rarr;
-            </span>
-          </div>
-        </div>
-      `;
-      return card;
+        `;
+        container.appendChild(row);
+      });
     }
 
     function navigateToArticle(id) {
@@ -452,12 +496,11 @@
       }
 
       document.getElementById('list-view').classList.add('hidden');
-      document.getElementById('category-tab-container').classList.add('hidden');
       document.getElementById('detail-view').classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
       document.getElementById('detail-title').innerText = article.title;
-      document.getElementById('detail-category').innerText = article.category || 'Công nghệ';
+      document.getElementById('detail-category').innerText = article.category || 'Công Nghệ';
       document.getElementById('detail-date').innerText = article.created_at ? new Date(article.created_at).toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : '';
       
       const imgUrl = getArticleImage(article);
@@ -497,10 +540,10 @@
       relatedGrid.innerHTML = '';
       related.forEach(item => {
         const div = document.createElement('div');
-        div.className = "p-3.5 rounded-2xl border border-slate-100 bg-white hover:border-indigo-200 cursor-pointer transition shadow-2xs";
+        div.className = "p-4 rounded-xl border border-slate-200 bg-white hover:border-brand-blue cursor-pointer transition shadow-2xs";
         div.onclick = () => navigateToArticle(item.id);
         div.innerHTML = `
-          <h4 class="font-bold text-slate-800 text-xs sm:text-sm hover:text-indigo-600 line-clamp-2 mb-1">${item.title}</h4>
+          <h4 class="font-bold text-slate-900 text-xs sm:text-sm hover:text-brand-blue line-clamp-2 mb-1">${item.title}</h4>
           <span class="text-[10px] font-mono text-slate-400">${item.created_at ? new Date(item.created_at).toLocaleDateString('vi-VN') : ''}</span>
         `;
         relatedGrid.appendChild(div);
@@ -513,15 +556,14 @@
       }
       document.getElementById('detail-view').classList.add('hidden');
       document.getElementById('list-view').classList.remove('hidden');
-      document.getElementById('category-tab-container').classList.remove('hidden');
     }
 
     function filterCategory(cat) {
       currentCategory = cat;
       document.querySelectorAll('.cat-btn').forEach(btn => {
-        btn.className = "cat-btn px-3 py-1 rounded-full bg-slate-100/80 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 transition";
+        btn.className = "cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition";
       });
-      event.target.className = "cat-btn active px-3.5 py-1 rounded-full bg-indigo-600 text-white font-semibold shadow-xs transition";
+      event.target.className = "cat-btn active px-3.5 py-2 rounded text-white bg-brand-darkblue transition";
       
       if (!document.getElementById('detail-view').classList.contains('hidden')) {
         showListView();
@@ -536,11 +578,10 @@
       renderContent();
     });
 
-    // PWA Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
-          .then(reg => console.log('Service Worker Registered'))
+          .then(reg => console.log('PWA Service Worker Registered'))
           .catch(err => console.log('SW Error:', err));
       });
     }
