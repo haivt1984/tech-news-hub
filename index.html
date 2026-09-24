@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>TechCraft Hub &bull; Cẩm Nang Công Nghệ, Thủ Thuật Hệ Thống & AI</title>
 
-  <!-- PWA & iOS Safari Config -->
+  <!-- PWA & iOS Safari Standalone Config -->
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -62,10 +62,10 @@
     <div class="flex items-center gap-3">
       <span class="inline-flex items-center gap-1.5 font-bold text-amber-300">
         <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
-        TECHCRAFT PULSE
+        TECHCRAFT HUB
       </span>
       <span class="hidden sm:inline text-white/40">|</span>
-      <span class="hidden sm:inline text-white/80">Cổng kiến thức công nghệ thực chiến, quản trị hệ thống & giải pháp AI</span>
+      <span class="hidden sm:inline text-white/80">Cổng kiến thức quản trị mạng, thủ thuật thực chiến & làm chủ hệ sinh thái AI</span>
     </div>
     <div id="stats-counter" class="text-white font-semibold">Đang nạp dữ liệu...</div>
   </div>
@@ -74,17 +74,24 @@
   <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
       
-      <!-- Brand Logo -->
-      <div class="flex items-center gap-3 cursor-pointer" onclick="showListView()">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-blue to-indigo-600 flex items-center justify-center text-white font-mono font-bold text-lg shadow-md shadow-blue-500/20">
-          TC/
+      <!-- Logo + Mega Menu Button -->
+      <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="showListView()">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-blue to-indigo-600 flex items-center justify-center text-white font-mono font-bold text-lg shadow-md shadow-blue-500/20">
+            TC/
+          </div>
+          <div>
+            <span class="font-extrabold text-2xl tracking-tight text-slate-900">
+              TechCraft<span class="text-brand-orange font-mono text-base ml-0.5">.Hub</span>
+            </span>
+            <p class="text-[11px] text-slate-400 font-medium">Hệ thống cẩm nang công nghệ & thủ thuật số</p>
+          </div>
         </div>
-        <div>
-          <span class="font-extrabold text-2xl tracking-tight text-slate-900">
-            TechCraft<span class="text-brand-orange font-mono text-base ml-0.5">.Hub</span>
-          </span>
-          <p class="text-[11px] text-slate-400 font-medium">Hệ sinh thái kiến thức công nghệ & thủ thuật hệ thống</p>
-        </div>
+
+        <!-- Mega Menu Toggle Button -->
+        <button onclick="toggleMegaMenu()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-brand-blue hover:text-white text-slate-700 text-xs font-bold transition font-mono border border-slate-200">
+          <span id="menu-icon">☰</span> <span>DANH MỤC</span>
+        </button>
       </div>
 
       <!-- Controls: Search & Sort -->
@@ -93,7 +100,7 @@
           <input 
             type="text" 
             id="search-input"
-            placeholder="Tìm thủ thuật, AI, hệ thống mạng..." 
+            placeholder="Tìm bài viết, AI, Prompt, Windows, Linux..." 
             class="w-full bg-slate-100 border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-blue focus:bg-white transition"
           />
           <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,44 +119,153 @@
       </div>
     </div>
 
-    <!-- Category Navigation -->
+    <!-- Navigation Bar Ngang (Các nhóm chủ đạo) -->
     <div class="bg-brand-blue text-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-1 overflow-x-auto text-xs font-semibold no-scrollbar py-1">
-        <button onclick="filterCategory('ALL')" class="cat-btn active px-3.5 py-2 rounded text-white bg-brand-darkblue transition">
+        <button onclick="filterCategory('ALL')" class="cat-btn active px-3 py-2 rounded text-white bg-brand-darkblue transition">
           TRANG CHỦ
         </button>
-        <button onclick="filterCategory('Trí Tuệ Nhân Tạo')" class="cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition">
-          AI & CÔNG NGHỆ
+        <button onclick="filterCategory('AI')" class="cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition">
+          ✨ HỆ SINH THÁI AI
         </button>
-        <button onclick="filterCategory('Thủ Thuật')" class="cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition">
-          THỦ THUẬT HỆ THỐNG
+        <button onclick="filterCategory('Prompt')" class="cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition">
+          📝 THƯ VIỆN PROMPT
         </button>
-        <button onclick="filterCategory('Quản Trị Mạng')" class="cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition">
-          QUẢN TRỊ MẠNG & HẠ TẦNG
+        <button onclick="filterCategory('Hướng Dẫn')" class="cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition">
+          💡 HƯỚNG DẪN AI
         </button>
-        <button onclick="filterCategory('An Ninh')" class="cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition">
-          BẢO MẬT & AN NINH MẠNG
+        <button onclick="filterCategory('Workflow')" class="cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition">
+          ⚡ WORKFLOW & N8N
         </button>
-        <button onclick="filterCategory('Lập Trình')" class="cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition">
-          LẬP TRÌNH & MÃ NGUỒN
+        <button onclick="filterCategory('Công nghệ')" class="cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition">
+          💻 CÔNG NGHỆ & HỆ THỐNG
         </button>
+        <button onclick="filterCategory('Học CNTT')" class="cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition">
+          🎓 HỌC CNTT (PYTHON/EXCEL)
+        </button>
+        <button onclick="filterCategory('Bảo Mật')" class="cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition">
+          🛡️ AN NINH BẢO MẬT
+        </button>
+      </div>
+    </div>
+
+    <!-- MEGA MENU POPUP (TỔ CHỨC THEO CÂY THƯ MỤC CHUẨN QUANTRI MẠNG TỪ FILE EXCEL) -->
+    <div id="mega-menu" class="hidden bg-white border-b-2 border-brand-blue shadow-xl transition-all duration-300">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 text-xs">
+          
+          <!-- Cột 1: Hệ sinh thái AI -->
+          <div>
+            <h4 class="font-bold text-brand-blue uppercase tracking-wider border-b border-slate-200 pb-1.5 mb-2.5 flex items-center gap-1.5">
+              <span>🤖</span> AI Nổi Bật
+            </h4>
+            <ul class="space-y-1.5 text-slate-600">
+              <li><button onclick="selectMenuTag('ChatGPT')" class="hover:text-brand-blue">ChatGPT</button></li>
+              <li><button onclick="selectMenuTag('Claude')" class="hover:text-brand-blue">Claude</button></li>
+              <li><button onclick="selectMenuTag('Gemini')" class="hover:text-brand-blue">Google Gemini</button></li>
+              <li><button onclick="selectMenuTag('Copilot')" class="hover:text-brand-blue">Microsoft Copilot</button></li>
+              <li><button onclick="selectMenuTag('Grok')" class="hover:text-brand-blue">Grok AI</button></li>
+              <li><button onclick="selectMenuTag('Perplexity')" class="hover:text-brand-blue">Perplexity</button></li>
+              <li><button onclick="selectMenuTag('NotebookLM')" class="hover:text-brand-blue">NotebookLM</button></li>
+              <li><button onclick="selectMenuTag('Cursor')" class="hover:text-brand-blue">Cursor Code AI</button></li>
+            </ul>
+          </div>
+
+          <!-- Cột 2: Thư viện Prompt -->
+          <div>
+            <h4 class="font-bold text-brand-orange uppercase tracking-wider border-b border-slate-200 pb-1.5 mb-2.5 flex items-center gap-1.5">
+              <span>📝</span> Thư Viện Prompt
+            </h4>
+            <ul class="space-y-1.5 text-slate-600">
+              <li><button onclick="selectMenuTag('Prompt')" class="hover:text-brand-orange font-semibold">Tất cả Prompt</button></li>
+              <li><button onclick="selectMenuTag('Prompt Lập trình')" class="hover:text-brand-orange">Prompt Lập trình IT</button></li>
+              <li><button onclick="selectMenuTag('Prompt Nội dung')" class="hover:text-brand-orange">Prompt Content</button></li>
+              <li><button onclick="selectMenuTag('Prompt Marketing')" class="hover:text-brand-orange">Prompt Marketing</button></li>
+              <li><button onclick="selectMenuTag('Prompt Ảnh')" class="hover:text-brand-orange">Prompt Hình ảnh</button></li>
+              <li><button onclick="selectMenuTag('Prompt Video')" class="hover:text-brand-orange">Prompt Video AI</button></li>
+              <li><button onclick="selectMenuTag('Prompt Giáo dục')" class="hover:text-brand-orange">Prompt Giáo dục</button></li>
+            </ul>
+          </div>
+
+          <!-- Cột 3: Hướng Dẫn & Workflow -->
+          <div>
+            <h4 class="font-bold text-brand-blue uppercase tracking-wider border-b border-slate-200 pb-1.5 mb-2.5 flex items-center gap-1.5">
+              <span>💡</span> Hướng Dẫn AI
+            </h4>
+            <ul class="space-y-1.5 text-slate-600">
+              <li><button onclick="selectMenuTag('AI cho người mới')" class="hover:text-brand-blue">AI cho người mới</button></li>
+              <li><button onclick="selectMenuTag('AI cho Văn phòng')" class="hover:text-brand-blue">AI cho Văn phòng</button></li>
+              <li><button onclick="selectMenuTag('AI cho Lập trình')" class="hover:text-brand-blue">AI cho Developer</button></li>
+              <li><button onclick="selectMenuTag('AI cho Content')" class="hover:text-brand-blue">AI cho Creator</button></li>
+              <li><button onclick="selectMenuTag('Workflow')" class="hover:text-brand-blue font-semibold text-brand-orange">Tự động hóa Workflow</button></li>
+              <li><button onclick="selectMenuTag('n8n')" class="hover:text-brand-blue">Quy trình n8n</button></li>
+              <li><button onclick="selectMenuTag('Zapier')" class="hover:text-brand-blue">Tích hợp Zapier</button></li>
+            </ul>
+          </div>
+
+          <!-- Cột 4: Hệ Thống & Phần Cứng -->
+          <div>
+            <h4 class="font-bold text-slate-800 uppercase tracking-wider border-b border-slate-200 pb-1.5 mb-2.5 flex items-center gap-1.5">
+              <span>💻</span> Công Nghệ & OS
+            </h4>
+            <ul class="space-y-1.5 text-slate-600">
+              <li><button onclick="selectMenuTag('Windows')" class="hover:text-brand-blue">Windows 11 / 10</button></li>
+              <li><button onclick="selectMenuTag('Linux')" class="hover:text-brand-blue">Linux & Server</button></li>
+              <li><button onclick="selectMenuTag('macOS')" class="hover:text-brand-blue">macOS</button></li>
+              <li><button onclick="selectMenuTag('iPhone')" class="hover:text-brand-blue">iOS & iPhone</button></li>
+              <li><button onclick="selectMenuTag('Android')" class="hover:text-brand-blue">Android</button></li>
+              <li><button onclick="selectMenuTag('Phần cứng')" class="hover:text-brand-blue">Phần Cứng & PC</button></li>
+              <li><button onclick="selectMenuTag('Mạng')" class="hover:text-brand-blue">Mạng & Wi-Fi</button></li>
+            </ul>
+          </div>
+
+          <!-- Cột 5: Học CNTT -->
+          <div>
+            <h4 class="font-bold text-brand-blue uppercase tracking-wider border-b border-slate-200 pb-1.5 mb-2.5 flex items-center gap-1.5">
+              <span>🎓</span> Học CNTT
+            </h4>
+            <ul class="space-y-1.5 text-slate-600">
+              <li><button onclick="selectMenuTag('Python')" class="hover:text-brand-blue">Học Python</button></li>
+              <li><button onclick="selectMenuTag('Excel')" class="hover:text-brand-blue">Hàm Excel & Bảng tính</button></li>
+              <li><button onclick="selectMenuTag('Vibe Coding')" class="hover:text-brand-blue font-semibold text-brand-orange">Vibe Coding với AI</button></li>
+              <li><button onclick="selectMenuTag('Machine Learning')" class="hover:text-brand-blue">Machine Learning</button></li>
+              <li><button onclick="selectMenuTag('SQL')" class="hover:text-brand-blue">Cơ sở dữ liệu SQL</button></li>
+              <li><button onclick="selectMenuTag('Claude Code')" class="hover:text-brand-blue">Claude Code & CLI</button></li>
+            </ul>
+          </div>
+
+          <!-- Cột 6: Bảo Mật & Tiện Ích -->
+          <div>
+            <h4 class="font-bold text-slate-800 uppercase tracking-wider border-b border-slate-200 pb-1.5 mb-2.5 flex items-center gap-1.5">
+              <span>🛡️</span> Bảo Mật & Tools
+            </h4>
+            <ul class="space-y-1.5 text-slate-600">
+              <li><button onclick="selectMenuTag('Bảo Mật')" class="hover:text-brand-blue">An Ninh Mạng</button></li>
+              <li><button onclick="selectMenuTag('Virus')" class="hover:text-brand-blue">Diệt Virus & Ransomware</button></li>
+              <li><button onclick="selectMenuTag('VPN')" class="hover:text-brand-blue">Mạng ảo VPN & Proxy</button></li>
+              <li><button onclick="selectMenuTag('Tiện ích')" class="hover:text-brand-blue">Tiện ích Trực tuyến</button></li>
+              <li><button onclick="selectMenuTag('Download')" class="hover:text-brand-blue">Kho Phần Mềm</button></li>
+            </ul>
+          </div>
+
+        </div>
       </div>
     </div>
   </header>
 
-  <!-- ================= VIEW 1: TRANG CHỦ ================= -->
+  <!-- ================= VIEW 1: TRANG CHỦ BỐ CỤC CHUẨN ================= -->
   <main id="list-view" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
     
-    <!-- 1. KHU VỰC TIÊU ĐIỂM (1 BÀI ĐINH LỚN + 3 BÀI NHỎ) -->
+    <!-- KHU VỰC TIÊU ĐIỂM (1 BÀI ĐINH LỚN + 3 BÀI NHỎ) -->
     <section id="hero-section" class="mb-8 hidden"></section>
 
-    <!-- 2. BỐ CỤC 2 CỘT -->
+    <!-- BỐ CỤC 2 CỘT -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
       
-      <!-- Cột Trái: Dòng bài viết chính -->
+      <!-- Cột Trái (8 phần): Dòng bài viết -->
       <div class="lg:col-span-8">
         <div class="flex items-center justify-between border-b-2 border-brand-blue pb-2 mb-6">
-          <h2 class="text-base font-bold uppercase text-brand-blue flex items-center gap-2">
+          <h2 id="section-title" class="text-base font-bold uppercase text-brand-blue flex items-center gap-2">
             <span class="w-2.5 h-2.5 bg-brand-orange rounded-xs"></span>
             BÀI VIẾT MỚI CẬP NHẬT
           </h2>
@@ -164,49 +280,47 @@
         </div>
       </div>
 
-      <!-- Cột Phải: Sidebar Tiện ích & Mẹo nhanh -->
+      <!-- Cột Phải (4 phần): Sidebar Mẹo nhanh & Tags AI -->
       <aside class="lg:col-span-4 space-y-6">
         
-        <!-- Widget 1: Mẹo hay & Đáng chú ý -->
+        <!-- Widget 1: Hệ Sinh Thái AI & Prompt Nổi Bật -->
         <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
           <div class="flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
-            <span class="text-brand-orange font-bold">⚡</span>
-            <h3 class="font-bold text-sm text-slate-800 uppercase tracking-tight">Mẹo & Tiện Ích Đáng Chú Ý</h3>
+            <span class="text-brand-orange font-bold">✨</span>
+            <h3 class="font-bold text-sm text-slate-800 uppercase tracking-tight">Trọng Tâm AI & Công Cụ</h3>
+          </div>
+          <div class="flex flex-wrap gap-1.5 text-xs">
+            <button onclick="selectMenuTag('ChatGPT')" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white transition text-slate-600">ChatGPT</button>
+            <button onclick="selectMenuTag('Claude')" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white transition text-slate-600">Claude</button>
+            <button onclick="selectMenuTag('Gemini')" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white transition text-slate-600">Gemini</button>
+            <button onclick="selectMenuTag('Copilot')" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white transition text-slate-600">Copilot</button>
+            <button onclick="selectMenuTag('Prompt')" class="px-2.5 py-1 rounded bg-amber-50 text-amber-800 border border-amber-200 hover:bg-brand-orange hover:text-white transition">Thư Viện Prompt</button>
+            <button onclick="selectMenuTag('n8n')" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white transition text-slate-600">Workflow n8n</button>
+            <button onclick="selectMenuTag('Python')" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white transition text-slate-600">Học Python</button>
+            <button onclick="selectMenuTag('Excel')" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white transition text-slate-600">Hàm Excel</button>
+          </div>
+        </div>
+
+        <!-- Widget 2: Mẹo kỹ thuật nhanh -->
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+          <div class="flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
+            <span class="text-brand-blue font-bold">⚡</span>
+            <h3 class="font-bold text-sm text-slate-800 uppercase tracking-tight">Ghi Chú Quản Trị Hệ Thống</h3>
           </div>
           <ul class="text-xs space-y-3 text-slate-600 leading-relaxed">
             <li class="flex items-start gap-2">
               <span class="text-brand-blue font-bold">&bull;</span>
-              <span>ChatGPT & AI Prompting: Phương pháp tối ưu quy trình làm việc và tự động hóa tác vụ</span>
+              <span>Sử dụng công thức Prompting phân tầng (Role - Context - Goal - Output) để tăng gấp 3 lần chất lượng phản hồi từ LLM.</span>
             </li>
             <li class="flex items-start gap-2">
               <span class="text-brand-blue font-bold">&bull;</span>
-              <span>Khắc phục lỗi xác thực và cấp phát địa chỉ IP qua DHCP trên mạng doanh nghiệp</span>
+              <span>Luôn thiết lập Backup cấu hình router và file hosts trước khi thay đổi bảng định tuyến mạng.</span>
             </li>
             <li class="flex items-start gap-2">
               <span class="text-brand-blue font-bold">&bull;</span>
-              <span>Các câu lệnh PowerShell thiết yếu cho IT Support và Quản trị viên hệ thống</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-brand-blue font-bold">&bull;</span>
-              <span>Thiết lập tường lửa và phân quyền bảo mật nhiều lớp chống xâm nhập trái phép</span>
+              <span>Kích hoạt Windows Sandbox để chạy thử nghiệm các file cài đặt đáng ngờ trước khi đưa lên máy tính chính.</span>
             </li>
           </ul>
-        </div>
-
-        <!-- Widget 2: Chủ đề phổ biến -->
-        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
-          <div class="flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
-            <span class="text-brand-blue font-bold">📂</span>
-            <h3 class="font-bold text-sm text-slate-800 uppercase tracking-tight">Chủ Đề Quan Tâm</h3>
-          </div>
-          <div class="flex flex-wrap gap-1.5 text-xs">
-            <span class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white cursor-pointer transition text-slate-600">Windows 11</span>
-            <span class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white cursor-pointer transition text-slate-600">Trí Tuệ Nhân Tạo</span>
-            <span class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white cursor-pointer transition text-slate-600">An Toàn Thông Tin</span>
-            <span class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white cursor-pointer transition text-slate-600">Linux Server</span>
-            <span class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white cursor-pointer transition text-slate-600">Automation Script</span>
-            <span class="px-2.5 py-1 rounded bg-slate-100 hover:bg-brand-blue hover:text-white cursor-pointer transition text-slate-600">Hạ Tầng Mạng</span>
-          </div>
         </div>
 
       </aside>
@@ -214,7 +328,7 @@
     </div>
   </main>
 
-  <!-- ================= VIEW 2: TRANG ĐỌC BÀI CHI TIẾT ================= -->
+  <!-- ================= VIEW 2: TRANG ĐỌC BÀI VIẾT (FULL SPA) ================= -->
   <main id="detail-view" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full hidden">
     <!-- Back Button -->
     <button onclick="showListView()" class="group inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-brand-blue hover:text-brand-blue font-semibold text-xs transition shadow-2xs mb-6">
@@ -241,7 +355,7 @@
       <div id="detail-tips-box" class="p-4 sm:p-5 rounded-xl bg-amber-50 border border-amber-200 mb-6 text-xs font-mono">
         <div class="flex items-center gap-1.5 text-amber-800 font-bold uppercase tracking-wider mb-1.5 text-[11px]">
           <span>💡</span>
-          <span>LƯU Ý KỸ THUẬT & HƯỚNG DẪN THỰC HIỆN</span>
+          <span>LƯU Ý THỰC HIỆN TỪ CHUYÊN GIA</span>
         </div>
         <p id="detail-tips" class="text-slate-700 leading-relaxed font-sans text-sm font-normal"></p>
       </div>
@@ -251,7 +365,7 @@
 
       <!-- Footer Action -->
       <div class="mt-10 pt-6 border-t border-slate-100 flex items-center justify-between text-xs font-mono">
-        <span class="text-slate-400">Xuất bản trên TechCraft Platform</span>
+        <span class="text-slate-400">Nguồn trích xuất: TechCraft / QuanTriMang Architecture</span>
         <button onclick="showListView()" class="px-4 py-2 rounded-lg bg-brand-blue hover:bg-brand-darkblue text-white font-bold transition">
           Xem bài viết khác &rarr;
         </button>
@@ -273,9 +387,9 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-2">
         <span class="w-2.5 h-2.5 rounded-full bg-brand-blue"></span>
-        <span class="font-bold text-slate-700">TechCraft Platform</span>
+        <span class="font-bold text-slate-700">TechCraft Hub Portal</span>
       </div>
-      <div>Nền tảng tri thức Công Nghệ, Hệ Thống & Quản Trị Mạng &bull; PWA Standalone</div>
+      <div>Kiến thức Công Nghệ, Hệ Thống, Lập Trình & AI &bull; PWA Standalone Enabled</div>
     </div>
   </footer>
 
@@ -311,6 +425,30 @@
       return getFallbackForArticle(article);
     }
 
+    function toggleMegaMenu() {
+      const menu = document.getElementById('mega-menu');
+      const icon = document.getElementById('menu-icon');
+      if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        icon.innerText = '✕';
+      } else {
+        menu.classList.add('hidden');
+        icon.innerText = '☰';
+      }
+    }
+
+    function selectMenuTag(keyword) {
+      document.getElementById('search-input').value = keyword;
+      const menu = document.getElementById('mega-menu');
+      menu.classList.add('hidden');
+      document.getElementById('menu-icon').innerText = '☰';
+      
+      if (!document.getElementById('detail-view').classList.contains('hidden')) {
+        showListView();
+      }
+      renderContent();
+    }
+
     async function initPortal() {
       try {
         const { data, error } = await client.from('tech_articles').select('*');
@@ -319,7 +457,7 @@
           document.getElementById('articles-list').innerHTML = `
             <div class="text-center py-16 bg-white rounded-xl border border-slate-200 p-6">
               <p class="text-slate-700 font-bold">Chưa có bài viết nào trong hệ thống</p>
-              <p class="text-slate-400 text-xs mt-1 font-mono">Chạy Actions workflow để hệ thống bắt đầu nạp bài.</p>
+              <p class="text-slate-400 text-xs mt-1 font-mono">Chạy Actions workflow để hệ thống nạp bài.</p>
             </div>
           `;
           return;
@@ -362,7 +500,9 @@
       
       let filtered = allArticles.filter(item => {
         const matchCategory = (currentCategory === 'ALL') || (item.category && item.category.toLowerCase().includes(currentCategory.toLowerCase()));
-        const matchSearch = (!query) || (item.title && item.title.toLowerCase().includes(query));
+        const matchSearch = (!query) || 
+          (item.title && item.title.toLowerCase().includes(query)) ||
+          (item.category && item.category.toLowerCase().includes(query));
         return matchCategory && matchSearch;
       });
 
@@ -374,17 +514,20 @@
       });
 
       document.getElementById('results-count').innerText = `${filtered.length} bài viết`;
+      document.getElementById('section-title').innerHTML = `
+        <span class="w-2.5 h-2.5 bg-brand-orange rounded-xs"></span>
+        ${query ? `KẾT QUẢ TÌM KIẾM: "${query.toUpperCase()}"` : (currentCategory === 'ALL' ? 'BÀI VIẾT MỚI CẬP NHẬT' : `CHUYÊN MỤC: ${currentCategory.toUpperCase()}`)}
+      `;
 
       const heroSection = document.getElementById('hero-section');
       const listContainer = document.getElementById('articles-list');
 
       if (filtered.length === 0) {
         heroSection.classList.add('hidden');
-        listContainer.innerHTML = `<div class="text-center py-16 text-slate-400 font-mono text-xs">Không tìm thấy bài viết phù hợp.</div>`;
+        listContainer.innerHTML = `<div class="text-center py-16 text-slate-400 font-mono text-xs">Không tìm thấy bài viết phù hợp với chuyên mục hoặc từ khóa.</div>`;
         return;
       }
 
-      // Render Tiêu điểm nếu là trang chủ mặc định
       if (currentCategory === 'ALL' && !query && currentSort === 'newest' && filtered.length >= 4) {
         renderHeroBlock(filtered.slice(0, 4));
         heroSection.classList.remove('hidden');
@@ -406,7 +549,7 @@
       hero.innerHTML = `
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs">
           
-          <!-- Bài đinh bên trái -->
+          <!-- Bài đinh lớn bên trái -->
           <div onclick="navigateToArticle(${mainLead.id})" class="lg:col-span-7 cursor-pointer group flex flex-col justify-between">
             <div class="w-full h-64 sm:h-72 rounded-xl overflow-hidden mb-3.5 bg-slate-100">
               <img src="${mainImg}" alt="${mainLead.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.onerror=null; this.src='${getFallbackForArticle(mainLead)}';">
@@ -422,7 +565,7 @@
             </div>
           </div>
 
-          <!-- 3 Bài nhỏ bên phải -->
+          <!-- 3 bài tiêu điểm nhỏ bên phải -->
           <div class="lg:col-span-5 flex flex-col justify-between divide-y divide-slate-100">
             ${sideLeads.map(item => `
               <div onclick="navigateToArticle(${item.id})" class="py-3 first:pt-0 last:pb-0 cursor-pointer group flex gap-3.5 items-center">
@@ -430,7 +573,7 @@
                   <img src="${getArticleImage(item)}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='${getFallbackForArticle(item)}';">
                 </div>
                 <div>
-                  <span class="text-[10px] font-bold text-brand-orange uppercase block mb-0.5">${item.category || 'Mẹo Hay'}</span>
+                  <span class="text-[10px] font-bold text-brand-orange uppercase block mb-0.5">${item.category || 'Thủ Thuật'}</span>
                   <h4 class="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-brand-blue transition line-clamp-2 leading-snug">
                     ${item.title}
                   </h4>
@@ -497,6 +640,8 @@
 
       document.getElementById('list-view').classList.add('hidden');
       document.getElementById('detail-view').classList.remove('hidden');
+      document.getElementById('mega-menu').classList.add('hidden');
+      document.getElementById('menu-icon').innerText = '☰';
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
       document.getElementById('detail-title').innerText = article.title;
@@ -563,8 +708,9 @@
       document.querySelectorAll('.cat-btn').forEach(btn => {
         btn.className = "cat-btn px-3 py-2 rounded text-white/90 hover:bg-brand-darkblue transition";
       });
-      event.target.className = "cat-btn active px-3.5 py-2 rounded text-white bg-brand-darkblue transition";
+      event.target.className = "cat-btn active px-3 py-2 rounded text-white bg-brand-darkblue transition";
       
+      document.getElementById('search-input').value = '';
       if (!document.getElementById('detail-view').classList.contains('hidden')) {
         showListView();
       }
