@@ -9,7 +9,6 @@ import sys
 sys.stdout.reconfigure(line_buffering=True)
 
 # ================= CẤU HÌNH THÔNG TIN =================
-# Lọc sạch triệt để mọi định dạng Markdown, ngoặc vuông, ngoặc tròn, xuống dòng \n
 RAW_SUPABASE = os.getenv("SUPABASE_URL", "https://lleeibzegmnycuingzgx.supabase.co")
 match = re.search(r'https://[a-zA-Z0-9-]+\.supabase\.co', RAW_SUPABASE)
 if match:
@@ -23,7 +22,6 @@ SUPABASE_KEY = os.getenv(
 ).strip("[]'\" \t\n\r")
 # ======================================================
 
-# Nguồn tin Công nghệ chuẩn hóa
 FEEDS = [
     {"source": "VnExpress Số Hóa", "url": "https://vnexpress.net/rss/so-hoa.rss", "default_cat": "Thiết bị số"},
     {"source": "Tuổi Trẻ Công Nghệ", "url": "https://tuoitre.vn/rss/nhip-song-so.rss", "default_cat": "Trí tuệ nhân tạo"},
@@ -90,9 +88,22 @@ def analyze_tech_article(title, desc, default_cat):
     elif "phần cứng" in content_lower or "laptop" in content_lower or "chip" in content_lower:
         insight = "Cân nhắc hiệu năng trên giá thành (P/P) và nhu cầu thực tế trước khi nâng cấp thiết bị mới."
 
-    return title_clean, summary, insight, category
+    # Xây dựng nội dung bài viết hoàn chỉnh lưu trực tiếp trên web
+    full_content = f"""
+    <p class="font-medium text-lg leading-relaxed text-slate-700 mb-6">{summary}</p>
+    <div class="p-5 rounded-2xl bg-sky-50 border border-sky-200 mb-8">
+      <h4 class="font-mono text-xs font-bold text-sky-800 uppercase tracking-wider mb-2">📌 Phân tích & Khuyến nghị kỹ thuật:</h4>
+      <p class="text-sm text-slate-700 leading-relaxed">{insight}</p>
+    </div>
+    <div class="space-y-4 text-slate-600 leading-relaxed text-sm">
+      <p>Trong bối cảnh chuyển đổi số và công nghệ phát triển nhanh chóng, các diễn biến mới liên quan đến <strong>{title_clean}</strong> đang nhận được nhiều sự quan tâm từ cộng đồng công nghệ tại Việt Nam cũng như trên thế giới.</p>
+      <p>Việc nắm bắt và cập nhật liên tục các thay đổi về công nghệ, tiêu chuẩn kỹ thuật số và an toàn thông tin sẽ giúp các cá nhân cũng như doanh nghiệp tối ưu hiệu suất làm việc và bảo vệ tài nguyên số một cách hiệu quả nhất.</p>
+    </div>
+    """
 
-print("=== BẮT ĐẦU CÀO TIN TỨC CÔNG NGHỆ CHUYÊN SÂU ===")
+    return title_clean, summary, insight, category, full_content
+
+print("=== BẮT ĐẦU CÀO VÀ LƯU TRỮ TIN TỨC TRỰC TIẾP ===")
 
 for feed_info in FEEDS:
     source_name = feed_info["source"]
@@ -119,7 +130,7 @@ for feed_info in FEEDS:
 
         print(f"    -> Đang nạp: {original_title[:45]}...")
 
-        title, summary, tips, category = analyze_tech_article(
+        title, summary, tips, category, content = analyze_tech_article(
             original_title, description, feed_info["default_cat"]
         )
 
@@ -128,18 +139,19 @@ for feed_info in FEEDS:
             "summary": summary,
             "tips": tips,
             "category": category,
+            "content": content,
             "original_url": original_url
         }
 
         try:
             db_res = requests.post(SUPABASE_ENDPOINT, headers=SUPABASE_HEADERS, json=record, timeout=10)
             if db_res.status_code in [200, 201]:
-                print(f"       ✔ Đã lưu thành công: [{category}]")
+                print(f"       ✔ Đã lưu bài trực tiếp: [{category}]")
             else:
-                print(f"       ✖ Lỗi Supabase: {db_res.status_code}")
+                print(f"       ✖ Lỗi Supabase: {db_res.status_code} - {db_res.text[:80]}")
         except Exception as e:
             print(f"       ✖ Lỗi lưu bài: {e}")
 
         time.sleep(1)
 
-print("\n=== HOÀN TẤT! CƠ SỞ DỮ LIỆU CÔNG NGHỆ ĐÃ SẴN SÀNG ===")
+print("\n=== HOÀN TẤT! DỮ LIỆU ĐÃ ĐƯỢC LƯU TRỰC TIẾP VÀO WEBSITE ===")
