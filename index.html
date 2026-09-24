@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TechVN Pulse &bull; Tạp Chí Công Nghệ & Trí Tuệ Nhân Tạo</title>
+  <title>TechVN Pulse &bull; Tạp Chí & Cẩm Nang Công Nghệ Số</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -77,7 +77,7 @@
           <input 
             type="text" 
             id="search-input"
-            placeholder="Tìm bài viết, AI, thiết bị, an ninh..." 
+            placeholder="Tìm bài viết, AI, thiết bị, an ninh, tools..." 
             class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-100 transition shadow-inner font-mono"
           />
           <svg class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,14 +111,17 @@
         <button onclick="filterCategory('Bảo mật')" class="cat-btn px-3.5 py-1.5 rounded-lg bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 font-semibold transition">
           An ninh mạng
         </button>
-        <button onclick="filterCategory('Phần mềm')" class="cat-btn px-3.5 py-1.5 rounded-lg bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 font-semibold transition">
-          Nền tảng & Ứng dụng
+        <button onclick="filterCategory('Kho Phần Mềm')" class="cat-btn px-3.5 py-1.5 rounded-lg bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 font-semibold transition">
+          💾 Kho Phần Mềm & Công Cụ
+        </button>
+        <button onclick="filterCategory('Mã Nguồn Mở')" class="cat-btn px-3.5 py-1.5 rounded-lg bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 font-semibold transition">
+          🐧 Mã Nguồn Mở (FOSS)
         </button>
       </div>
     </div>
   </header>
 
-  <!-- LIST VIEW -->
+  <!-- ================= VIEW 1: DANH SÁCH BÀI VIẾT ================= -->
   <main id="list-view" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full tech-grid-bg">
     <section id="hero-section" class="mb-10 hidden"></section>
 
@@ -126,7 +129,7 @@
       <div>
         <h2 class="text-lg font-bold tracking-tight text-slate-900 font-mono flex items-center gap-2">
           <span class="w-2.5 h-2.5 bg-sky-500 rounded-sm"></span>
-          BẢN TIN CÔNG NGHỆ MỚI CẬP NHẬT
+          BẢN TIN CÔNG NGHỆ CHUYÊN ĐỀ
         </h2>
         <p class="text-xs text-slate-500 mt-0.5">Bấm vào bài viết để đọc nội dung trọn vẹn và xem đầy đủ hình ảnh</p>
       </div>
@@ -141,7 +144,7 @@
     </div>
   </main>
 
-  <!-- FULL ARTICLE VIEW -->
+  <!-- ================= VIEW 2: TRANG ĐỌC BÀI CHI TIẾT ================= -->
   <main id="detail-view" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full hidden">
     <button onclick="showListView()" class="group inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:border-sky-500 hover:text-sky-600 font-mono text-xs font-bold transition shadow-xs mb-8">
       <span class="group-hover:-translate-x-1 transition duration-200">&larr;</span> Quay lại danh sách bản tin
@@ -153,13 +156,14 @@
         <span id="detail-date" class="text-xs font-mono text-slate-400"></span>
       </div>
 
-      <h1 id="detail-title" class="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight tracking-tight mb-8"></h1>
+      <h1 id="detail-title" class="text-2xl sm:text-4xl font-extrabold text-slate-900 leading-tight tracking-tight mb-8"></h1>
 
-      <!-- Ảnh đại diện chính (ẩn nếu không có ảnh) -->
+      <!-- Feature Image -->
       <div id="detail-img-container" class="w-full rounded-2xl overflow-hidden mb-8 bg-slate-100 border border-slate-100 max-h-[480px]">
         <img id="detail-img" src="" alt="Thumbnail" class="w-full h-full object-cover">
       </div>
 
+      <!-- Actionable Advice / Tips Block -->
       <div id="detail-tips-box" class="p-5 rounded-2xl bg-sky-50/80 border border-sky-200 mb-8 font-mono text-xs">
         <div class="flex items-center gap-1.5 text-sky-800 font-bold uppercase tracking-wider mb-2">
           <span>⚡</span>
@@ -168,17 +172,19 @@
         <p id="detail-tips" class="text-slate-700 leading-relaxed font-sans text-sm"></p>
       </div>
 
-      <!-- Toàn bộ nội dung bài viết + các hình ảnh bên trong -->
+      <!-- Main Body Content -->
       <div id="detail-body" class="prose max-w-none text-slate-800"></div>
 
+      <!-- Article Footer -->
       <div class="mt-12 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono">
-        <span class="text-slate-400">Xuất bản trên TechVN Pulse</span>
+        <span class="text-slate-400">Xuất bản bởi TechVN Pulse Data Engine</span>
         <button onclick="showListView()" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-sky-600 text-white font-bold transition">
           &larr; Xem bài viết khác
         </button>
       </div>
     </article>
 
+    <!-- Related Articles -->
     <div class="mt-12">
       <h3 class="font-mono text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
         <span class="w-2 h-2 bg-sky-500 rounded-xs"></span>
@@ -208,24 +214,39 @@
     let currentCategory = 'ALL';
     let currentSort = 'newest';
 
-    // Ảnh dự phòng chất lượng cao từ CDN Unsplash an toàn
-    const fallbackImages = {
-      'Trí tuệ nhân tạo': 'https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=800&q=80',
-      'Phần cứng': 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=800&q=80',
-      'Bảo mật': 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
-      'Phần mềm': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80',
-      'default': 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80'
-    };
+    // Kho ảnh công nghệ Unsplash đa dạng chống trùng lặp
+    const techPhotoPool = [
+      'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', // Chip
+      'https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=800&q=80', // AI
+      'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80', // Bảo mật
+      'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=800&q=80', // Hardware
+      'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80', // Software
+      'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80', // Network
+      'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=800&q=80', // Laptop
+      'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80', // Earth Tech
+      'https://images.unsplash.com/photo-1504639725590-34d0984388bd?auto=format&fit=crop&w=800&q=80', // Coding
+      'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80'  // Digital Team
+    ];
+
+    function getFallbackForArticle(article) {
+      const idNum = parseInt(article.id) || 0;
+      if (idNum > 0) {
+        return techPhotoPool[idNum % techPhotoPool.length];
+      }
+      let hash = 0;
+      const str = article.title || 'tech';
+      for (let i = 0; i < str.length; i++) {
+        hash = (hash << 5) - hash + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return techPhotoPool[Math.abs(hash) % techPhotoPool.length];
+    }
 
     function getArticleImage(article) {
       if (article.image_url && article.image_url.startsWith('http')) {
         return article.image_url;
       }
-      const cat = article.category || '';
-      for (const key in fallbackImages) {
-        if (cat.includes(key)) return fallbackImages[key];
-      }
-      return fallbackImages['default'];
+      return getFallbackForArticle(article);
     }
 
     async function initPortal() {
@@ -355,7 +376,7 @@
           </div>
 
           <div class="lg:col-span-5 relative min-h-[240px] lg:min-h-full overflow-hidden bg-slate-100">
-            <img src="${imgUrl}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='${fallbackImages['default']}'">
+            <img src="${imgUrl}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.onerror=null; this.src='${getFallbackForArticle(item)}';">
           </div>
         </div>
       `;
@@ -372,7 +393,7 @@
       card.innerHTML = `
         <div>
           <div class="w-full h-44 overflow-hidden relative bg-slate-100">
-            <img src="${imgUrl}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='${fallbackImages['default']}'">
+            <img src="${imgUrl}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='${getFallbackForArticle(item)}';" loading="lazy">
             <span class="absolute top-3 left-3 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-white/95 backdrop-blur-sm text-slate-800 border border-slate-200 shadow-xs uppercase">
               ${item.category || 'Công nghệ'}
             </span>
@@ -427,7 +448,7 @@
       const imgUrl = getArticleImage(article);
       const imgEl = document.getElementById('detail-img');
       imgEl.src = imgUrl;
-      imgEl.onerror = () => { imgEl.src = fallbackImages['default']; };
+      imgEl.onerror = () => { imgEl.src = getFallbackForArticle(article); };
 
       const tipsBox = document.getElementById('detail-tips-box');
       if (article.tips) {
@@ -437,7 +458,6 @@
         tipsBox.classList.add('hidden');
       }
 
-      // Hiển thị trọn vẹn nội dung bài viết và toàn bộ ảnh thật của bài
       const bodyBox = document.getElementById('detail-body');
       if (article.content && article.content.length > 50) {
         bodyBox.innerHTML = article.content;
