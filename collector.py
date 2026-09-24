@@ -7,10 +7,10 @@ import requests
 from bs4 import BeautifulSoup
 import sys
 
-# Bật in log trực tiếp trên console GitHub Actions
+# Đảm bảo in log trực tiếp trên GitHub Actions console
 sys.stdout.reconfigure(line_buffering=True)
 
-# ================= CẤU HÌNH THÔNG TIN =================
+# ================= CẤU HÌNH KẾT NỐI SUPABASE =================
 RAW_SUPABASE = os.getenv("SUPABASE_URL", "https://lleeibzegmnycuingzgx.supabase.co")
 match = re.search(r'https://[a-zA-Z0-9-]+\.supabase\.co', RAW_SUPABASE)
 SUPABASE_URL = match.group(0) if match else "https://lleeibzegmnycuingzgx.supabase.co"
@@ -19,9 +19,8 @@ SUPABASE_KEY = os.getenv(
     "SUPABASE_KEY",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxsZWVpYnplZ21ueWN1aW5nemd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxMjc5OTUsImV4cCI6MjEwNTcwMzk5NX0.KrO8Y8qoKh0NIPYDL6wki7zGb-Lxi1xwWgQrX9xSXxE"
 ).strip("[]'\" \t\n\r")
-# ======================================================
+# =============================================================
 
-# Danh sách nguồn cấp tin tức công nghệ và kho phần mềm
 FEEDS = [
     # Tin tức công nghệ báo chí Việt Nam
     {"source": "VnExpress Số Hóa", "url": "https://vnexpress.net/rss/so-hoa.rss", "default_cat": "Thiết bị số"},
@@ -36,7 +35,7 @@ FEEDS = [
     {"source": "FOSSHub Open Source", "url": "https://www.fosshub.com/feed.xml", "default_cat": "Mã Nguồn Mở (FOSS)"}
 ]
 
-ARTICLES_PER_FEED = 3
+ARTICLES_PER_FEED = 50
 
 SUPABASE_ENDPOINT = f"{SUPABASE_URL}/rest/v1/tech_articles"
 SUPABASE_HEADERS = {
@@ -47,7 +46,7 @@ SUPABASE_HEADERS = {
 }
 
 REQUEST_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
 }
 
 def clean_text(text):
@@ -68,75 +67,130 @@ def is_article_exists(url):
     return False
 
 def scrape_full_article(url):
-    """Cào trọn vẹn văn bản và toàn bộ hình ảnh thực tế của bài viết"""
+    """Cào trọn vẹn đoạn sapo mở đầu, toàn bộ nội dung văn bản và toàn bộ hình ảnh gốc từ trang báo"""
     try:
         res = requests.get(url, headers=REQUEST_HEADERS, timeout=12)
         if res.status_code != 200:
             return None, None
-        
-        soup = BeautifulSoup(res.content, 'html.parser')
 
-        # Loại bỏ các phần tử rác, quảng cáo, nút chia sẻ
-        for tag in soup(['script', 'style', 'iframe', 'header', 'footer', 'nav', 'form', 'aside']):
-            tag.decompose()
-        for tag in soup.find_all(class_=re.compile(r'relate|box-tag|comment|banner|advert|social|author|breadcrumb')):
-            tag.decompose()
+        res.encoding = 'utf-8'
+        soup = BeautifulSoup(res.text, 'html.parser')
 
-        # Vùng chứa nội dung bài báo
-        container = (
-            soup.find('article') or 
-            soup.find(class_=re.compile(r'fck_detail|detail-content|article-body|content-detail|singular-content|entry-content')) or
-            soup.find('div', id=re.compile(r'content|article'))
-        )
+        # Dọn dẹp rác, bình luận, quảng cáo, mạng xã hội
+        for junk in soup(['script', 'style', 'iframe', 'header', 'footer', 'nav', 'form', 'aside', 'noscript']):
+            junk.decompose()
+        for junk in soup.find_all(class_=re.compile(r'relate|box-tag|comment|banner|advert|social|author|breadcrumb|recommend|sticky|video-relate')):
+            junk.decompose()
+
+        container = None
+        sapo_text = ""
+
+        # 1. Định vị vùng nội dung theo từng cơ quan báo chí
+        if "vnexpress.net" in url:
+            container = soup.find(class_=re.compile(r'fck_detail'))
+            sapo_tag = soup.find(class_=re.compile(r'description'))
+            if sapo_tag:
+                sapo_text = clean_text(sapo_tag.get_text())
+
+        elif "tuoitre.vn" in url:
+            container = soup.find(id="main-detail-body") or soup.find(class_=re.compile(r'detail-content|content-detail'))
+            sapo_tag = soup.find(class_=re.compile(r'detail-sapo|sapo'))
+            if sapo_tag:
+                sapo_text = clean_text(sapo_tag.get_text())
+
+        elif "thanhnien.vn" in url:
+            container = soup.find(id="main-detail-body") or soup.find(class_=re.compile(r'detail-content|content-detail'))
+            sapo_tag = soup.find(class_=re.compile(r'detail-sapo|sapo'))
+            if sapo_tag:
+                sapo_text = clean_text(sapo_tag.get_text())
+
+        elif "dantri.com.vn" in url:
+            container = soup.find(class_=re.compile(r'singular-content|dt-news__content'))
+            sapo_tag = soup.find(class_=re.compile(r'singular-sapo'))
+            if sapo_tag:
+                sapo_text = clean_text(sapo_tag.get_text())
+
+        elif "vietnamnet.vn" in url:
+            container = soup.find(id="maincontent") or soup.find(class_=re.compile(r'content-detail|maincontent'))
+            sapo_tag = soup.find(class_=re.compile(r'content-detail-sapo'))
+            if sapo_tag:
+                sapo_text = clean_text(sapo_tag.get_text())
+
+        # Dự phòng chung nếu là nguồn khác
         if not container:
-            container = soup.body
+            container = (
+                soup.find('article') or 
+                soup.find(class_=re.compile(r'fck_detail|detail-content|article-body|content-detail|entry-content')) or
+                soup.find('div', id=re.compile(r'content|article|main')) or
+                soup.body
+            )
 
         content_html_parts = []
         lead_image = None
+        added_images = set()
 
-        # Bóc tách ảnh và các đoạn văn bản theo thứ tự xuất hiện
-        for element in container.find_all(['p', 'figure', 'img', 'h2', 'h3']):
-            # Bắt hình ảnh
-            if element.name in ['img', 'figure']:
+        # Thêm đoạn sapo mở đầu
+        if sapo_text and len(sapo_text) > 15:
+            content_html_parts.append(f'<p class="font-semibold text-slate-900 text-lg leading-relaxed mb-6 border-b border-slate-100 pb-4">{sapo_text}</p>')
+
+        # 2. Quét tuần tự bóc tách ảnh và từng đoạn văn bản
+        for element in container.find_all(['p', 'figure', 'div', 'h2', 'h3', 'img']):
+            # Bóc tách ảnh từ thẻ <img>, <figure> hoặc thẻ <div> chứa ảnh
+            if element.name in ['figure', 'img'] or (element.name == 'div' and ('photo' in str(element.get('class', [])).lower() or element.get('type') == 'Photo')):
                 img_tag = element if element.name == 'img' else element.find('img')
                 if img_tag:
-                    src = img_tag.get('data-src') or img_tag.get('data-original') or img_tag.get('src')
-                    if src and src.startswith('http') and not any(ext in src.lower() for ext in ['icon', 'logo', 'svg', 'avatar']):
-                        caption_tag = element.find('figcaption') or element.find(class_=re.compile(r'caption|desc'))
-                        caption = caption_tag.get_text().strip() if caption_tag else ""
-                        
+                    # Bắt tất cả các cơ chế Lazy-load
+                    src = (
+                        img_tag.get('data-src') or 
+                        img_tag.get('data-original') or 
+                        img_tag.get('data-srcset') or 
+                        img_tag.get('src') or ''
+                    ).strip()
+
+                    # Nếu có srcset, lấy URL đầu tiên
+                    if ' ' in src and src.startswith('http'):
+                        src = src.split(' ')[0]
+
+                    if src.startswith('http') and src not in added_images and not any(ext in src.lower() for ext in ['icon', 'logo', 'svg', 'avatar', 'blank.gif', 'tracking']):
+                        added_images.add(src)
+
+                        caption_tag = element.find('figcaption') or element.find(class_=re.compile(r'caption|desc|text-caption'))
+                        caption = clean_text(caption_tag.get_text()) if caption_tag else ""
+
                         if not lead_image:
                             lead_image = src
 
                         content_html_parts.append(f"""
                         <figure class="my-6">
                             <img src="{src}" alt="{caption}" class="w-full rounded-2xl border border-slate-200 shadow-sm object-cover max-h-[520px]" loading="lazy" onerror="this.style.display='none'">
-                            {f'<figcaption class="text-xs text-center text-slate-500 mt-2 font-mono">{caption}</figcaption>' if caption else ''}
+                            {f'<figcaption class="text-xs text-center text-slate-500 mt-2 font-mono italic">{caption}</figcaption>' if caption else ''}
                         </figure>
                         """)
-            # Bắt tiêu đề phụ
+
+            # Bóc tách tiêu đề phụ giữa bài
             elif element.name in ['h2', 'h3']:
                 text = clean_text(element.get_text())
-                if len(text) > 5:
-                    content_html_parts.append(f'<h3 class="text-xl font-bold text-slate-900 mt-6 mb-3 font-mono">{text}</h3>')
-            # Bắt đoạn văn
+                if 5 < len(text) < 150:
+                    content_html_parts.append(f'<h3 class="text-xl font-bold text-slate-900 mt-8 mb-3 font-mono">{text}</h3>')
+
+            # Bóc tách đoạn văn
             elif element.name == 'p':
                 text = clean_text(element.get_text())
-                if len(text) > 25 and not any(k in text.lower() for k in ['ảnh:', 'nguồn:', 'theo dõi', 'bình luận']):
+                if len(text) > 30 and not text.lower().startswith(('ảnh:', 'nguồn:', 'theo ')):
                     content_html_parts.append(f'<p class="mb-4 leading-relaxed text-slate-700 text-base sm:text-lg">{text}</p>')
 
         full_content = "\n".join(content_html_parts)
         return full_content, lead_image
 
     except Exception as e:
-        print(f"      [!] Lỗi cào nội dung chi tiết: {e}")
+        print(f"      [!] Lỗi trích xuất nội dung: {e}")
         return None, None
 
 def analyze_tech_article(title, desc, default_cat):
     title_clean = clean_text(title)
     desc_clean = clean_text(desc)
     content_lower = f"{title_clean} {desc_clean}".lower()
-    
+
     category = default_cat
     if any(k in content_lower for k in ["download", "release", "portable", "installer", "cài đặt", "tiện ích", "update", "freeware"]):
         category = "Kho Phần Mềm & Tiện Ích"
@@ -192,7 +246,7 @@ for feed_info in FEEDS:
             print(f"    [-] Đã có trong cơ sở dữ liệu: {original_title[:40]}...")
             continue
 
-        print(f"    -> Đang trích xuất toàn bộ: {original_title[:45]}...")
+        print(f"    -> Đang bóc tách toàn bộ: {original_title[:45]}...")
 
         title, summary, tips, category = analyze_tech_article(
             original_title, description, feed_info["default_cat"]
